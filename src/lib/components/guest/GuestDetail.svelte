@@ -2,6 +2,7 @@
 	import type { GuestVisit } from '$lib/types';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import * as Field from '$lib/components/ui/field';
+	import { Separator } from '$lib/components/ui/separator';
 	import { Badge } from '$lib/components/ui/badge';
 
 	let {
@@ -51,7 +52,7 @@
 <Dialog.Root bind:open onOpenChange={handleOpenChange}>
 	<Dialog.Portal>
 		<Dialog.Overlay />
-		<Dialog.Content class="max-h-[90vh] overflow-y-auto sm:max-w-xl">
+		<Dialog.Content class="max-h-[80vh] scrollbar-thin overflow-y-auto sm:max-w-xl">
 			<Dialog.Header>
 				<Dialog.Title>Detail Kunjungan</Dialog.Title>
 				<Dialog.Description>
@@ -64,100 +65,116 @@
 			</Dialog.Header>
 
 			{#if visit}
-				<div class="grid gap-4">
-					<Field.Group class="grid gap-4 sm:grid-cols-2">
-						<Field.Field>
-							<Field.Label class="text-xs text-muted-foreground">1. Nama Lengkap</Field.Label>
-							<p class="text-sm font-medium">{visit.nama}</p>
-						</Field.Field>
+				<div class="grid gap-6">
+					<div>
+						<h4 class="text-[11px] font-medium tracking-widest text-slate uppercase">Personal</h4>
+						<Separator class="my-2" />
+						<Field.Group class="grid gap-3 sm:grid-cols-2">
+							<Field.Field class="gap-1.5">
+								<Field.Label class="text-xs text-muted-foreground">1. Nama Lengkap</Field.Label>
+								<p class="text-xs font-medium text-foreground">{visit.nama}</p>
+							</Field.Field>
+							<Field.Field class="gap-1.5">
+								<Field.Label class="text-xs text-muted-foreground">2. Jenis Kelamin</Field.Label>
+								<div>
+									<Badge variant={visit.gender === 'Perempuan' ? 'secondary' : 'outline'}>
+										{visit.gender}
+									</Badge>
+								</div>
+							</Field.Field>
+							<Field.Field class="gap-1.5">
+								<Field.Label class="text-xs text-muted-foreground">8. Tahun Lahir</Field.Label>
+								<p class="text-xs font-medium text-foreground">{visit.tahun_lahir}</p>
+							</Field.Field>
+						</Field.Group>
+					</div>
 
-						<Field.Field>
-							<Field.Label class="text-xs text-muted-foreground">2. Jenis Kelamin</Field.Label>
-							<div>
-								<Badge variant={visit.gender === 'Perempuan' ? 'secondary' : 'outline'}>
-									{visit.gender}
-								</Badge>
-							</div>
-						</Field.Field>
+					<div>
+						<h4 class="text-[11px] font-medium tracking-widest text-slate uppercase">Kontak</h4>
+						<Separator class="my-2" />
+						<Field.Group class="grid gap-3 sm:grid-cols-2">
+							<Field.Field class="gap-1.5">
+								<Field.Label class="text-xs text-muted-foreground">3. Asal Instansi</Field.Label>
+								<p class="text-xs font-medium text-foreground">{visit.instansi}</p>
+							</Field.Field>
+							<Field.Field class="gap-1.5">
+								<Field.Label class="text-xs text-muted-foreground">4. Nomor HP</Field.Label>
+								<p class="text-xs font-medium text-foreground">{visit.hp}</p>
+							</Field.Field>
+							<Field.Field class="sm:col-span-2">
+								<Field.Label class="text-xs text-muted-foreground">5. Email</Field.Label>
+								<p class="text-xs font-medium break-all text-foreground">{visit.email}</p>
+							</Field.Field>
+						</Field.Group>
+					</div>
 
-						<Field.Field>
-							<Field.Label class="text-xs text-muted-foreground">3. Asal Instansi</Field.Label>
-							<p class="text-sm">{visit.instansi}</p>
-						</Field.Field>
+					<div>
+						<h4 class="text-[11px] font-medium tracking-widest text-slate uppercase">
+							Pekerjaan & Pendidikan
+						</h4>
+						<Separator class="my-2" />
+						<Field.Group class="grid gap-3 sm:grid-cols-2">
+							<Field.Field class="gap-1.5">
+								<Field.Label class="text-xs text-muted-foreground">6. Pekerjaan</Field.Label>
+								<p class="text-xs font-medium text-foreground">{displayPekerjaan}</p>
+							</Field.Field>
+							<Field.Field class="gap-1.5">
+								<Field.Label class="text-xs text-muted-foreground">9. Pendidikan</Field.Label>
+								<p class="text-xs font-medium text-foreground">{visit.pendidikan}</p>
+							</Field.Field>
+						</Field.Group>
+					</div>
 
-						<Field.Field>
-							<Field.Label class="text-xs text-muted-foreground">4. Nomor HP</Field.Label>
-							<p class="text-sm">{visit.hp}</p>
-						</Field.Field>
+					<div>
+						<h4 class="text-[11px] font-medium tracking-widest text-slate uppercase">Domisili</h4>
+						<Separator class="my-2" />
+						<Field.Group class="grid gap-3 sm:grid-cols-2">
+							<Field.Field class="gap-1.5">
+								<Field.Label class="text-xs text-muted-foreground">10. Negara</Field.Label>
+								<p class="text-xs font-medium text-foreground">{visit.negara}</p>
+							</Field.Field>
+							<Field.Field class="gap-1.5">
+								<Field.Label class="text-xs text-muted-foreground">11. Provinsi</Field.Label>
+								<p class="text-xs font-medium text-foreground">{displayProvinsi}</p>
+							</Field.Field>
+							<Field.Field class="sm:col-span-2">
+								<Field.Label class="text-xs text-muted-foreground">12. Kabupaten/Kota</Field.Label>
+								<p class="text-xs font-medium text-foreground">{visit.kab_kota}</p>
+							</Field.Field>
+						</Field.Group>
+					</div>
 
-						<Field.Field class="sm:col-span-2">
-							<Field.Label class="text-xs text-muted-foreground">5. Email</Field.Label>
-							<p class="text-sm break-all">{visit.email}</p>
-						</Field.Field>
+					<div>
+						<h4 class="text-[11px] font-medium tracking-widest text-slate uppercase">
+							Disabilitas
+						</h4>
+						<Separator class="my-2" />
+						<Field.Group class="grid gap-3 sm:grid-cols-2">
+							<Field.Field class="gap-1.5">
+								<Field.Label class="text-xs text-muted-foreground">13. Disabilitas</Field.Label>
+								<p class="text-xs font-medium text-foreground">{visit.disabilitas}</p>
+							</Field.Field>
+							<Field.Field class="gap-1.5">
+								<Field.Label class="text-xs text-muted-foreground">
+									14. Tipe Disabilitas
+								</Field.Label>
+								<p class="text-xs font-medium text-foreground">{displayTipeDisabilitas}</p>
+							</Field.Field>
+						</Field.Group>
+					</div>
 
-						<Field.Field>
-							<Field.Label class="text-xs text-muted-foreground">6. Pekerjaan</Field.Label>
-							<p class="text-sm">{displayPekerjaan}</p>
-						</Field.Field>
-
-						<Field.Field>
-							<Field.Label class="text-xs text-muted-foreground">8. Tahun Lahir</Field.Label>
-							<p class="text-sm">{visit.tahun_lahir}</p>
-						</Field.Field>
-
-						<Field.Field>
-							<Field.Label class="text-xs text-muted-foreground">9. Pendidikan</Field.Label>
-							<p class="text-sm">{visit.pendidikan}</p>
-						</Field.Field>
-
-						<Field.Field>
-							<Field.Label class="text-xs text-muted-foreground">10. Negara</Field.Label>
-							<p class="text-sm">{visit.negara}</p>
-						</Field.Field>
-
-						<Field.Field>
-							<Field.Label class="text-xs text-muted-foreground">11. Provinsi</Field.Label>
-							<p class="text-sm">{displayProvinsi}</p>
-						</Field.Field>
-
-						<Field.Field>
-							<Field.Label class="text-xs text-muted-foreground">12. Kabupaten/Kota</Field.Label>
-							<p class="text-sm">{visit.kab_kota}</p>
-						</Field.Field>
-
-						<Field.Field>
-							<Field.Label class="text-xs text-muted-foreground">13. Disabilitas</Field.Label>
-							<p class="text-sm">{visit.disabilitas}</p>
-						</Field.Field>
-
-						<Field.Field>
-							<Field.Label class="text-xs text-muted-foreground">14. Tipe Disabilitas</Field.Label>
-							<p class="text-sm">{displayTipeDisabilitas}</p>
-						</Field.Field>
-
-						<Field.Field class="sm:col-span-2">
-							<Field.Label class="text-xs text-muted-foreground">15. Keperluan</Field.Label>
-							<div>
-								<Badge variant="secondary">{displayKeperluan}</Badge>
-							</div>
-						</Field.Field>
-
-						<Field.Field>
-							<Field.Label class="text-xs text-muted-foreground">Meta - ID</Field.Label>
-							<p class="text-sm">{visit.id}</p>
-						</Field.Field>
-
-						<Field.Field>
-							<Field.Label class="text-xs text-muted-foreground">Meta - Tanggal Kunjung</Field.Label
-							>
-							<p class="text-sm">{visit.visit_date}</p>
-						</Field.Field>
-
-						<Field.Field class="sm:col-span-2">
-							<Field.Label class="text-xs text-muted-foreground">Meta - Created At</Field.Label>
-							<p class="text-sm text-xs break-all text-muted-foreground">{visit.created_at}</p>
-						</Field.Field>
-					</Field.Group>
+					<div>
+						<h4 class="text-[11px] font-medium tracking-widest text-slate uppercase">Keperluan</h4>
+						<Separator class="my-2" />
+						<Field.Group class="grid gap-3">
+							<Field.Field class="gap-1.5">
+								<Field.Label class="text-xs text-muted-foreground">15. Keperluan</Field.Label>
+								<div>
+									<Badge variant="secondary">{displayKeperluan}</Badge>
+								</div>
+							</Field.Field>
+						</Field.Group>
+					</div>
 				</div>
 			{:else}
 				<p class="py-6 text-center text-sm text-muted-foreground">

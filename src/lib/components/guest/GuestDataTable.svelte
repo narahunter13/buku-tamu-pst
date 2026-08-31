@@ -69,7 +69,9 @@
 					<Table.Row>
 						{#each headerGroup.headers as header (header.id)}
 							<Table.Head
-								class="px-2 text-xs font-medium whitespace-nowrap text-foreground"
+								class={header.column.id === 'no'
+									? 'px-2 text-center text-xs font-medium whitespace-nowrap text-foreground'
+									: 'px-2 text-xs font-medium whitespace-nowrap text-foreground'}
 								style="min-width: {getColWidth(header.column.columnDef)}px; width: {getColWidth(
 									header.column.columnDef
 								)}px"
@@ -87,8 +89,12 @@
 					<Table.Row>
 						{#each row.getVisibleCells() as cell (cell.id)}
 							<Table.Cell
-								class="px-2 py-2 align-middle text-xs whitespace-nowrap"
-								style="min-width: {getColWidth(cell.column.columnDef)}px"
+								class={cell.column.id === 'no'
+									? 'justify-center px-2 py-2 text-center align-middle text-xs whitespace-nowrap'
+									: 'px-2 py-2 align-middle text-xs whitespace-nowrap'}
+								style="min-width: {getColWidth(cell.column.columnDef)}px; width: {getColWidth(
+									cell.column.columnDef
+								)}px"
 							>
 								<FlexRender {cell} />
 							</Table.Cell>
@@ -108,7 +114,7 @@
 		</table>
 	</div>
 
-	<div class="flex flex-wrap items-center justify-between gap-2 border-t p-2">
+	<div class="flex flex-wrap items-center justify-between gap-2 border-t p-2 px-4">
 		<div class="flex items-center gap-2">
 			<p class="text-xs text-muted-foreground">
 				Halaman {pagination.pageIndex + 1} dari {Math.max(1, pageCount)} - menampilkan {rows.length} dari

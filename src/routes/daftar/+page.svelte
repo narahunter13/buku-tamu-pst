@@ -70,7 +70,7 @@
 	</div>
 
 	<Card.Root>
-		<Card.Content class="flex flex-col gap-3 pt-4 md:flex-row md:items-center">
+		<Card.Content class="flex flex-col gap-3 md:flex-row md:items-center">
 			<div class="flex-1">
 				<Input
 					placeholder="Cari nama atau instansi..."
