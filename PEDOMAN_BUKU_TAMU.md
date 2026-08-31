@@ -1,0 +1,20 @@
+# Pedoman Buku Tamu — BPS Kota Pagar Alam
+
+| No | Pertanyaan | Jenis Pertanyaan | Validasi |
+|---|---|---|---|
+| 1 | Nama Lengkap | Teks Bebas (`text`) | Wajib (`required`) |
+| 2 | Jenis Kelamin | Pilihan Tunggal (`select`) | Wajib; opsi: `Laki-laki`, `Perempuan` |
+| 3 | Asal Instansi | Teks Bebas (`text`) | Wajib |
+| 4 | Nomor HP | Teks Bebas (`text`) | Wajib |
+| 5 | Email | Email (`email`) | Wajib; format email |
+| 6 | Pekerjaan | Pilihan Tunggal (`select`) | Wajib; opsi: `Pelajar/Mahasiswa`, `Peneliti/Dosen`, `ASN/TNI/Polri`, `Pegawai BUMN/BUMD`, `Pegawai Swasta`, `Wiraswasta`, `Lainnya` |
+| 7 | Tuliskan pekerjaan Anda | Teks Bebas (`text`) | Wajib **jika** `Pekerjaan = Lainnya`; disimpan sebagai `Lainnya: {isian}` |
+| 8 | Tahun Lahir | Pilihan Tunggal (`select` generate JS 1940–sekarang) | Wajib; harus angka; `1940 ≤ tahun ≤ tahun berjalan` |
+| 9 | Pendidikan Tertinggi | Pilihan Tunggal (`select`) | Wajib; opsi: `Tidak/Belum Sekolah`, `SD/Sederajat`, `SMP/Sederajat`, `SMA/Sederajat`, `D1/D2/D3`, `D4/S1`, `S2`, `S3` |
+| 10 | Negara | Pilihan Tunggal (`select`, default `Indonesia`) | Wajib |
+| 11 | Provinsi | Pilihan Tunggal (`select`, 38 provinsi) | Wajib **jika** `Negara = Indonesia`; jika `Negara ≠ Indonesia` otomatis dikosongkan |
+| 12 | Kabupaten/Kota | Teks Bebas (`text`) | Wajib |
+| 13 | Apakah Anda Penyandang Disabilitas? | Pilihan Tunggal (`radio`) | Wajib; opsi: `Ya`, `Tidak` |
+| 14 | Tipe Disabilitas | Pilihan Tunggal (`select`) | Wajib **jika** `Disabilitas = Ya`; opsi: `Fisik`, `Intelektual`, `Mental`, `Sensorik`; jika `Tidak` otomatis dikosongkan |
+| 15 | Keperluan | Pilihan Tunggal (`radio`) | Wajib; opsi: `Kunjungan Perpustakaan`, `Pembelian Produk Statistik Berbayar`, `Konsultansi Statistik`, `Rekomendasi Kegiatan Statistik`, `Cek Desil DTSEN`, `Update Data untuk DTSEN`, `Lainnya` |
+| 16 | Tuliskan keperluan kunjungan Anda | Teks Bebas (`text`) | Wajib **jika** `Keperluan = Lainnya`; disimpan sebagai `Lainnya: {isian}` ke kolom `message` |
