@@ -32,16 +32,16 @@ Prioritas tertinggi: minimalkan konsumsi token di setiap langkah.
 
 ## Tim subagents
 
-| Agent              | Peran                                                                 |
-| ------------------ | --------------------------------------------------------------------- |
-| @planner           | Menyusun rencana; rencana dituliskan ke "Rencana Aktif" di file ini   |
-| @task-manager      | Memecah rencana menjadi task kecil bertipe; checklist ditulis ke sini |
-| @frontend-engineer | Eksekusi penuh task tipe `frontend` (fitur besar)                     |
-| @backend-engineer  | Eksekusi penuh task tipe `backend` (API/DB/services)                  |
-| @coder             | HANYA perbaikan ringan (typo, satu fungsi, tweak kecil)               |
-| @code-reviewer     | Review kode, read-only                                                |
-| @qa                | Verifikasi vs acceptance criteria, bash-only                          |
-| @doc-writer        | Dokumentasi markdown                                                  |
+| Agent              | Peran                                                                                   |
+| ------------------ | --------------------------------------------------------------------------------------- |
+| @planner           | Menyusun rencana; rencana dituliskan ke "Rencana Aktif" di file ini                     |
+| @task-manager      | Memecah rencana menjadi task kecil bertipe; checklist ditulis ke sini                   |
+| @frontend-engineer | Eksekusi penuh task tipe `frontend` (fitur besar)                                       |
+| @backend-engineer  | Eksekusi penuh task tipe `backend` (API/DB/services)                                    |
+| @coder             | HANYA perbaikan ringan (typo, satu fungsi, tweak kecil)                                 |
+| @code-reviewer     | Review kode, read-only                                                                  |
+| @qa                | Verifikasi vs acceptance criteria, bash-only                                            |
+| @doc-writer        | Dokumentasi markdown                                                                    |
 | @commiter          | Git: staging selektif, commit, branch, push - WAJIB konfirmasi user sebelum commit/push |
 
 Muat skill proyek yang relevan dari `.opencode/skills/` bila ada (agent akan memuatnya sendiri).
@@ -167,6 +167,7 @@ Tidak ada pekerjaan yang dianggap selesai tanpa: typecheck lulus, build sukses, 
 ## Rencana
 
 ### Judul: Buku Tamu PST - Frontend SPA SvelteKit 5 (Fase Frontend-Only)
+
 - **Status:** approved 2026-08-31 - 8 poin user locked + 5 klarifikasi tambahan
 - **Pemilik:** @planner (revisi 2)
 - **Sumber:** PEDOMAN_BUKU_TAMU.md 16 field + AGENTS.md Konteks Proyek + keputusan user
@@ -174,6 +175,7 @@ Tidak ada pekerjaan yang dianggap selesai tanpa: typecheck lulus, build sukses, 
 - **Mode:** SPA static `ssr=false` `fallback:index.html` port 1420 locked, Tailwind v4 + shadcn-svelte, ESLint+Prettier, TS strict true, pnpm only
 
 #### 1. Kriteria Sukses Fase Frontend (Gate sebelum Tauri Backend)
+
 - AC1: `pnpm check` PASS (svelte-check + tsc strict)
 - AC2: `pnpm build` PASS hasil `build/index.html` + `build/_app/`
 - AC3: `pnpm lint` PASS (eslint + prettier)
@@ -188,15 +190,18 @@ Tidak ada pekerjaan yang dianggap selesai tanpa: typecheck lulus, build sukses, 
 Out-of-scope fase ini: `src-tauri/`, Rust, `tauri-plugin-sql`, IPC `invoke` (ditunda Task 8-11).
 
 #### 2. Arsitektur SPA
+
 - SvelteKit 2 + Svelte 5 runes, `adapter-static` fallback `index.html`, `src/routes/+layout.ts` `ssr=false prerender=false`, `vite.config.ts` port 1420 strictPort + `@tailwindcss/vite`
 - Lib: `lib/schemas/guest.ts` (zod superRefine 4 rules), `lib/types.ts`, `lib/constants/provinces.ts` 38 provinsi, `lib/data/dummy.ts` 25 records, `lib/stores/guests.svelte.ts` factory `$state.raw` + localStorage persist
 - Routes: `/` Form, `/daftar` Table+Dialog, `/statistik` Cards
 - Alur mock: seed dummy jika localStorage kosong -> form submit zod parse -> map `Lainnya: {isian}` -> `store.add()` -> `localStorage.setItem` -> toast -> reset
 
 #### 3. Tech Stack
+
 - SvelteKit 2, Svelte 5, adapter-static 3, Vite 6, TS strict true, ESLint+Prettier via `sv add`, Tailwind v4 via `sv add tailwindcss`, shadcn-svelte latest, zod 3.25, @lucide/svelte, svelte-sonner, pnpm only
 
 #### 4. Skema DB Referensi (untuk zod + dummy, eksekusi native di Task 9)
+
 ```sql
 CREATE TABLE visits (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -215,28 +220,34 @@ CREATE TABLE visits (
   CHECK((negara!='Indonesia' AND provinsi IS NULL) OR (negara='Indonesia' AND provinsi IS NOT NULL))
 );
 ```
+
 Mapping 16 field pedoman ke kolom, `Lainnya: {isian}` dipisah agar query atomik, display gabung di UI.
 
 #### 5. Data Dummy
+
 - `src/lib/data/dummy.ts` 25 records typed `GuestVisit`, distribusi: semua 7 pekerjaan, 8 pendidikan, 7 keperluan, 5x disabilitas Ya, 3x luar negeri provinsi null, tahun 1945-2006
 - Store `src/lib/stores/guests.svelte.ts` factory, `$state.raw` array, `nextId` `$derived`, `add()`, `list()`, persist `localStorage btpst_mock_visits`
 
 #### 6. Konfigurasi Final
+
 - `svelte.config.js` adapter-static fallback `index.html`, `vitePreprocess`, `runes:true`
 - `vite.config.ts` plugins `[tailwindcss(), sveltekit()]`, `server.port 1420 strictPort true host 127.0.0.1`, `preview same`
 - `src/routes/+layout.ts` `export const ssr=false; export const prerender=false`
 - `components.json` aliases `$lib/components/ui`, iconLibrary `@lucide/svelte`
 
 #### 7. Validasi
+
 - hp: `z.string().regex(/^[0-9]{8,15}$/, 'HP 8-15 digit')` (digit only)
 - email: `z.string().email()`
 - tahun_lahir: select 1940-now desc, placeholder kosong `required`
 - 4 conditional via `superRefine`
 
 #### 8. Strategi Verifikasi
+
 `pnpm check` 0 error, `pnpm lint` 0 error, `pnpm build` ada `build/index.html`, dev smoke di 1420 form conditional + /daftar filter + /statistik cards.
 
 #### 9. Risiko
+
 - Conditional 4 rule missed -> zod superRefine + $derived disable
 - 38 provinsi typo -> Permendagri 2023/2024 const
 - Tailwind v4 clash -> `@tailwindcss/vite`
@@ -245,62 +256,70 @@ Mapping 16 field pedoman ke kolom, `Lainnya: {isian}` dipisah agar query atomik,
 ## Daftar Task
 
 ### Task 1: Git init + first commit
+
 - Tipe: light-fix
 - Tujuan: git init, .gitignore SvelteKit+build+node_modules, commit AGENTS.md + PEDOMAN
 - File: `.gitignore`, `README.md`
 - Acceptance: `git log --oneline` 1 commit `chore: init`, branch main clean
 - Dependensi: tidak ada
-- Status: [ ] pending
+- Status: [x] done - 7f2d4e0
 
 ### Task 2: Scaffold SvelteKit minimal + TS strict + ESLint/Prettier + adapter-static + Vite 1420
+
 - Tipe: frontend
 - Tujuan: `pnpm dlx sv create . --template minimal --types ts` + `pnpm dlx sv add eslint prettier tailwindcss` + adapter-static fallback + vite 1420 + +layout.ts ssr false
 - File: `package.json`, `svelte.config.js`, `vite.config.ts`, `tsconfig.json`, `eslint.config.js`, `.prettierrc`, `src/routes/+layout.ts`, `src/app.html`, `src/app.css`
 - Acceptance: `pnpm check` PASS, `pnpm lint` PASS, `pnpm build` -> `build/index.html`, `pnpm dev` 1420 strictPort
 - Dependensi: Task 1
-- Status: [ ] pending
+- Status: [x] done - pnpm check/build PASS, adapter-static 3.0.10, 1420 strictPort
 
 ### Task 3: Tailwind v4 + shadcn-svelte init + core components
+
 - Tipe: frontend
 - Tujuan: `pnpm dlx shadcn-svelte@latest init` (default neutral) + add button input label select radio-group card table dialog field badge separator skeleton textarea sonner
 - File: `components.json`, `src/lib/utils.ts`, `src/lib/components/ui/*`, `src/app.css`, `src/routes/+layout.svelte`
 - Acceptance: components ada, `pnpm check` PASS, Button/Input render tanpa error
 - Dependensi: Task 2
-- Status: [ ] pending
+- Status: [x] done - 14 components, tailwind 4.3.0, check PASS
 
 ### Task 4: Schema DB referensi + Types + Constants + Zod + Dummy TS + Store localStorage
+
 - Tipe: frontend
 - Tujuan: `types.ts`, `constants/provinces.ts` 38, `constants/options.ts`, `schemas/guest.ts` zod superRefine hp digit, `schemas/guest.sql`, `data/dummy.ts` 25, `stores/guests.svelte.ts` factory + localStorage
 - File: `src/lib/types.ts`, `src/lib/constants/*`, `src/lib/schemas/guest.ts`, `src/lib/schemas/guest.sql`, `src/lib/data/dummy.ts`, `src/lib/stores/guests.svelte.ts`
 - Acceptance: `pnpm check` PASS, zod tolak 4 invalid conditional, dummy 25 cover varian, store add persist localStorage
 - Dependensi: Task 2 (paralel Task 3)
-- Status: [ ] pending
+- Status: [x] done - zod 3.25.76, 25 dummy, store btpst_mock_visits
 
 ### Task 5: Form Buku Tamu 16 field + conditional + validasi digit
+
 - Tipe: frontend
 - Tujuan: `/+page.svelte` + `GuestForm.svelte` FieldGroup Select/RadioGroup $derived conditional error inline submit store toast reset
 - File: `src/routes/+page.svelte`, `src/lib/components/guest/GuestForm.svelte`
 - Acceptance: 16 field urut pedoman, 4 conditional jalan, error data-invalid/aria-invalid, hp 8-15 digit only, submit tambah store
 - Dependensi: Task 3, Task 4
-- Status: [ ] pending
+- Status: [x] done - 16 field, 4 conditional, hp digit, store toast
 
 ### Task 6: List/Table Tamu + Detail + Search/Filter
+
 - Tipe: frontend
 - Tujuan: `/daftar/+page.svelte` + `GuestTable.svelte` + `GuestDetail.svelte` Dialog search nama/instansi filter keperluan/gender pagination 10
 - File: `src/routes/daftar/+page.svelte`, `src/lib/components/guest/GuestTable.svelte`, `src/lib/components/guest/GuestDetail.svelte`
 - Acceptance: Table 25+entry, search/filter reaktif $derived, dialog full field Lainnya combined, empty state
 - Dependensi: Task 5
-- Status: [ ] pending
+- Status: [x] done - table 25+entry, search/filter reaktif
 
 ### Task 7: Statistik + Responsive + QA Gate
+
 - Tipe: frontend
 - Tujuan: `/statistik/+page.svelte` cards total/hari ini/by keperluan/by pendidikan, responsive a11y, final check
 - File: `src/routes/statistik/+page.svelte`, `README.md`
 - Acceptance: `pnpm check/build/lint` PASS, manual gate 8 poin lolos, minta approval user
 - Dependensi: Task 6
-- Status: [ ] pending
+- Status: [x] done - statistik cards total/hari ini/by keperluan, responsive, check/build/lint PASS
 
 ### Task 8 [DITUNDA]: Init Tauri v2 + config 1420
+
 - Tipe: backend
 - Tujuan: cargo tauri init, tauri.conf.json devUrl 1420 frontendDist ../build
 - File: `src-tauri/*`
@@ -309,6 +328,7 @@ Mapping 16 field pedoman ke kolom, `Lainnya: {isian}` dipisah agar query atomik,
 - Status: [ ] ditunda
 
 ### Task 9 [DITUNDA]: SQLite plugin + migrasi visits
+
 - Tipe: backend
 - Tujuan: tauri-plugin-sql, SQL CREATE TABLE visits, seed 25 dummy
 - File: `src-tauri/src/db.rs`, `migrations/001_visits.sql`
@@ -317,6 +337,7 @@ Mapping 16 field pedoman ke kolom, `Lainnya: {isian}` dipisah agar query atomik,
 - Status: [ ] ditunda
 
 ### Task 10 [DITUNDA]: IPC commands + ganti store ke invoke
+
 - Tipe: backend
 - Tujuan: add_visit list_visits search, store ganti invoke()
 - File: `src-tauri/src/commands/*`, `src/lib/stores/guests.svelte.ts`
@@ -325,6 +346,7 @@ Mapping 16 field pedoman ke kolom, `Lainnya: {isian}` dipisah agar query atomik,
 - Status: [ ] ditunda
 
 ### Task 11 [DITUNDA]: Build bundle Windows + docs
+
 - Tipe: backend
 - Tujuan: pnpm tauri build installer
 - File: `docs/*`

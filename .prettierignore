@@ -1,0 +1,19 @@
+# Package Managers
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+bun.lock
+bun.lockb
+
+# SvelteKit
+.svelte-kit/
+build/
+
+# IDE
+.vscode/
+
+# Skills / docs with code snippets
+.opencode/
+
+# Miscellaneous
+/static/
