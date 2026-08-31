@@ -1,7 +1,9 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
+	import { tick } from 'svelte';
 	import { toast } from 'svelte-sonner';
+	import { Check, ChevronsUpDown } from '@lucide/svelte';
 	import * as Card from '$lib/components/ui/card';
 	import { Button } from '$lib/components/ui/button';
 	import { Input } from '$lib/components/ui/input';
@@ -10,6 +12,8 @@
 	import * as Select from '$lib/components/ui/select';
 	import * as RadioGroup from '$lib/components/ui/radio-group';
 	import * as Field from '$lib/components/ui/field';
+	import * as Popover from '$lib/components/ui/popover';
+	import * as Command from '$lib/components/ui/command';
 	import { guestSchema } from '$lib/schemas/guest';
 	import { guestStore } from '$lib/stores/guests.svelte';
 	import { provinces } from '$lib/constants/provinces';
@@ -69,6 +73,15 @@
 	let errors: Record<string, string> = $state({});
 	let isSubmitting = $state(false);
 	let successVisible = $state(false);
+	let provinsiOpen = $state(false);
+	let provinsiTriggerRef = $state<HTMLButtonElement>(null!);
+
+	const closeAndFocusProvinsi = (): void => {
+		provinsiOpen = false;
+		tick().then(() => {
+			provinsiTriggerRef?.focus();
+		});
+	};
 
 	const showPekerjaanLainnya = $derived(form.pekerjaan === 'Lainnya');
 	const showProvinsi = $derived(form.negara === 'Indonesia');
@@ -170,23 +183,27 @@
 	};
 </script>
 
-<Card.Root class="mx-auto w-full max-w-3xl">
+<Card.Root class="mx-auto w-full max-w-3xl p-6 shadow-sm">
 	<Card.Header>
-		<Card.Title class="text-xl">Buku Tamu PST - BPS Kota Pagar Alam</Card.Title>
-		<Card.Description
+		<Card.Title class="text-2xl font-[var(--font-cal-sans)] font-semibold tracking-tight"
+			>Buku Tamu PST - BPS Kota Pagar Alam</Card.Title
+		>
+		<Card.Description class="text-sm text-slate"
 			>Silakan isi 16 field berikut sesuai pedoman. Field bertanda * wajib diisi.</Card.Description
 		>
 	</Card.Header>
 	<Card.Content>
 		{#if successVisible}
 			<div
-				class="mb-4 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800"
+				class="mb-4 rounded-sm border border-green-200 bg-green-50 px-4 py-3 text-xs text-green-800"
 			>
 				Data kunjungan berhasil disimpan. Terima kasih telah mengisi buku tamu.
-				<button type="button" class="ml-2 underline" onclick={goToDaftar}>Lihat daftar</button>
+				<button type="button" class="ml-2 text-xs underline" onclick={goToDaftar}
+					>Lihat daftar</button
+				>
 			</div>
 		{/if}
-		<form id="guest-form" novalidate onsubmit={handleSubmit} class="grid gap-4 md:grid-cols-2">
+		<form id="guest-form" novalidate onsubmit={handleSubmit} class="grid gap-5 md:grid-cols-2">
 			<Field.Field data-invalid={errors.nama ? true : undefined}>
 				<Field.Label for="nama">1. Nama Lengkap *</Field.Label>
 				<Input
@@ -395,23 +412,54 @@
 			{#if showProvinsi}
 				<Field.Field data-invalid={errors.provinsi ? true : undefined}>
 					<Field.Label for="provinsi">11. Provinsi *</Field.Label>
-					<Select.Root type="single" bind:value={form.provinsi}>
-						<Select.Trigger
-							id="provinsi"
-							aria-invalid={errors.provinsi ? true : undefined}
-							data-invalid={errors.provinsi ? 'true' : undefined}
-							class="w-full"
+					<Popover.Root bind:open={provinsiOpen}>
+						<Popover.Trigger bind:ref={provinsiTriggerRef}>
+							{#snippet child({ props })}
+								<Button
+									{...props}
+									variant="outline"
+									role="combobox"
+									aria-expanded={provinsiOpen}
+									aria-invalid={errors.provinsi ? true : undefined}
+									data-invalid={errors.provinsi ? true : undefined}
+									class="h-9 w-full justify-between rounded-sm px-3 text-xs font-normal"
+								>
+									{form.provinsi || 'Pilih provinsi'}
+									<ChevronsUpDown class="size-4 opacity-50" />
+								</Button>
+							{/snippet}
+						</Popover.Trigger>
+						<Popover.Content
+							class="w-[var(--bits-popover-anchor-width)] rounded-sm p-0"
+							align="start"
 						>
-							<span data-slot="select-value">
-								{form.provinsi || 'Pilih provinsi'}
-							</span>
-						</Select.Trigger>
-						<Select.Content class="max-h-60">
-							{#each provinces as prov (prov)}
-								<Select.Item value={prov} label={prov}>{prov}</Select.Item>
-							{/each}
-						</Select.Content>
-					</Select.Root>
+							<Command.Root>
+								<Command.Input placeholder="Cari provinsi..." class="h-9 text-xs" />
+								<Command.List class="max-h-60 overflow-y-auto">
+									<Command.Empty class="p-2 text-xs">Tidak ditemukan.</Command.Empty>
+									<Command.Group>
+										{#each provinces as prov (prov)}
+											<Command.Item
+												value={prov}
+												onSelect={() => {
+													form.provinsi = prov;
+													closeAndFocusProvinsi();
+												}}
+												class="text-xs"
+											>
+												{prov}
+												<Check
+													class="ml-auto size-4 {form.provinsi === prov
+														? 'opacity-100'
+														: 'opacity-0'}"
+												/>
+											</Command.Item>
+										{/each}
+									</Command.Group>
+								</Command.List>
+							</Command.Root>
+						</Popover.Content>
+					</Popover.Root>
 					{#if errors.provinsi}
 						<Field.Error>{errors.provinsi}</Field.Error>
 					{/if}
@@ -524,8 +572,8 @@
 		</form>
 	</Card.Content>
 	<Card.Footer class="justify-end gap-2">
-		<Button type="button" variant="outline" onclick={handleReset}>Reset</Button>
-		<Button type="submit" form="guest-form" disabled={isSubmitting}>
+		<Button type="button" variant="outline" class="text-xs" onclick={handleReset}>Reset</Button>
+		<Button type="submit" form="guest-form" class="text-xs" disabled={isSubmitting}>
 			{isSubmitting ? 'Menyimpan...' : 'Simpan Kunjungan'}
 		</Button>
 	</Card.Footer>

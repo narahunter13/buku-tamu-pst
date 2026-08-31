@@ -87,7 +87,7 @@
 <div class="min-h-screen bg-background">
 	<header class="sticky top-0 z-10 border-b bg-background/80 backdrop-blur">
 		<div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
-			<a href="/" class="text-sm font-semibold">BPS Kota Pagar Alam - PST</a>
+			<a href="/" class="text-xs font-semibold">BPS Kota Pagar Alam - PST</a>
 			<nav class="flex items-center gap-1">
 				<Button href="/" variant="ghost" size="sm">Form</Button>
 				<Button href="/daftar" variant="secondary" size="sm">Daftar</Button>
@@ -100,7 +100,9 @@
 		<div class="mb-4 flex flex-col gap-3">
 			<div class="flex flex-wrap items-center justify-between gap-3">
 				<div class="flex items-center gap-2">
-					<h1 class="text-xl font-semibold">Daftar Kunjungan</h1>
+					<h1 class="text-2xl font-[var(--font-cal-sans)] font-semibold tracking-tight">
+						Daftar Kunjungan
+					</h1>
 					<Badge variant="secondary">{filtered.length} dari {visits.length}</Badge>
 				</div>
 				<Button variant="outline" size="sm" onclick={handleReset}>Reset filter</Button>

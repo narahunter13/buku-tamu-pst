@@ -3,14 +3,27 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-	--background: oklch(1 0 0);
-	--foreground: oklch(0.145 0 0);
-	--card: oklch(1 0 0);
-	--card-foreground: oklch(0.145 0 0);
-	--popover: oklch(1 0 0);
-	--popover-foreground: oklch(0.145 0 0);
-	--primary: oklch(0.205 0 0);
-	--primary-foreground: oklch(0.985 0 0);
+	--color-ink: #101010;
+	--color-paper: #f4f4f4;
+	--color-graphite: #242424;
+	--color-slate: #6b7280;
+	--color-stone: #898989;
+	--color-silver: #e5e7eb;
+	--color-white: #ffffff;
+	--color-action-blue: #0099ff;
+	--color-info-banner-bg: #eff6fe;
+	--page-max-width: 1200px;
+	--section-gap: 96px;
+	--card-padding: 24px;
+	--shadow-sm: rgba(36, 36, 36, 0.05) 0px 4px 8px 0px;
+	--background: var(--color-paper);
+	--foreground: var(--color-graphite);
+	--card: var(--color-white);
+	--card-foreground: var(--color-graphite);
+	--popover: var(--color-white);
+	--popover-foreground: var(--color-graphite);
+	--primary: var(--color-ink);
+	--primary-foreground: var(--color-white);
 	--secondary: oklch(0.97 0 0);
 	--secondary-foreground: oklch(0.205 0 0);
 	--muted: oklch(0.97 0 0);
@@ -19,10 +32,10 @@
 	--accent-foreground: oklch(0.205 0 0);
 	--destructive: oklch(0.577 0.245 27.325);
 	--destructive-foreground: oklch(0.985 0 0);
-	--border: oklch(0.922 0 0);
-	--input: oklch(0.922 0 0);
-	--ring: oklch(0.708 0 0);
-	--radius: 0.625rem;
+	--border: var(--color-silver);
+	--input: var(--color-silver);
+	--ring: var(--color-stone);
+	--radius: 0.25rem;
 	--sidebar: oklch(0.985 0 0);
 	--sidebar-foreground: oklch(0.145 0 0);
 	--sidebar-primary: oklch(0.205 0 0);
@@ -91,10 +104,31 @@
 	--color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
 	--color-sidebar-border: var(--sidebar-border);
 	--color-sidebar-ring: var(--sidebar-ring);
-	--radius-sm: calc(var(--radius) - 4px);
-	--radius-md: calc(var(--radius) - 2px);
-	--radius-lg: var(--radius);
-	--radius-xl: calc(var(--radius) + 4px);
+	--radius-sm: 0.25rem;
+	--radius-md: 0.25rem;
+	--radius-lg: 0.25rem;
+	--radius-xl: 0.25rem;
+	--color-ink: var(--color-ink);
+	--color-paper: var(--color-paper);
+	--color-graphite: var(--color-graphite);
+	--color-slate: var(--color-slate);
+	--color-stone: var(--color-stone);
+	--color-silver: var(--color-silver);
+	--color-white: var(--color-white);
+	--color-action-blue: var(--color-action-blue);
+	--color-info-banner-bg: var(--color-info-banner-bg);
+	--font-cal-sans: 'Cal Sans', Poppins, ui-sans-serif, system-ui;
+	--font-cal-ui: 'Cal Sans UI Variable Light', 'Inter Light', sans-serif;
+	--font-inter: Inter, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+	--text-caption: 12px;
+	--text-body-sm: 14px;
+	--text-body: 16px;
+	--text-subheading: 18px;
+	--text-heading-sm: 20px;
+	--text-heading: 24px;
+	--text-heading-lg: 48px;
+	--text-display: 64px;
+	--shadow-sm: var(--shadow-sm);
 }
 
 @layer base {
@@ -102,6 +136,16 @@
 		@apply border-border outline-ring/50;
 	}
 	body {
-		@apply bg-background text-foreground;
+		@apply bg-paper font-inter text-xs leading-5 text-graphite antialiased;
+	}
+	h1,
+	h2,
+	h3 {
+		font-family: var(--font-cal-sans);
+		font-weight: 600;
+		letter-spacing: 0.01em;
+	}
+	a {
+		color: var(--color-action-blue);
 	}
 }

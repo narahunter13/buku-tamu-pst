@@ -38,7 +38,7 @@
 		</Card.Content>
 	</Card.Root>
 {:else}
-	<div class="rounded-xl border bg-card">
+	<div class="rounded-sm border bg-card">
 		<Table.Root>
 			<Table.Header>
 				<Table.Row>

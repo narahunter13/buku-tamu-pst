@@ -77,7 +77,7 @@
 		<div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
 			<a
 				href="/"
-				class="rounded-sm text-sm font-semibold focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+				class="rounded-sm text-xs font-semibold focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
 			>
 				BPS Kota Pagar Alam - PST
 			</a>
@@ -93,8 +93,10 @@
 
 	<main class="mx-auto max-w-6xl px-4 py-6">
 		<div class="mb-6 flex flex-col gap-1">
-			<h1 class="text-xl font-semibold tracking-tight">Statistik Kunjungan</h1>
-			<p class="text-sm text-muted-foreground">
+			<h1 class="text-2xl font-[var(--font-cal-sans)] font-semibold tracking-tight">
+				Statistik Kunjungan
+			</h1>
+			<p class="text-xs text-muted-foreground">
 				Ringkasan kunjungan PST berdasarkan data tersimpan di browser (localStorage). Total data: {total}
 				kunjungan.
 			</p>
@@ -171,7 +173,12 @@
 
 		<section aria-labelledby="keperluan-heading" class="mb-6">
 			<div class="mb-3 flex items-center justify-between">
-				<h2 id="keperluan-heading" class="text-base font-semibold">By Keperluan</h2>
+				<h2
+					id="keperluan-heading"
+					class="text-xl font-[var(--font-cal-sans)] font-semibold tracking-tight"
+				>
+					By Keperluan
+				</h2>
 				<Badge variant="outline">{keperluanOptions.length} kategori</Badge>
 			</div>
 			<div class="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
@@ -211,7 +218,12 @@
 
 		<section aria-labelledby="pendidikan-heading" class="mb-6">
 			<div class="mb-3 flex items-center justify-between">
-				<h2 id="pendidikan-heading" class="text-base font-semibold">By Pendidikan</h2>
+				<h2
+					id="pendidikan-heading"
+					class="text-xl font-[var(--font-cal-sans)] font-semibold tracking-tight"
+				>
+					By Pendidikan
+				</h2>
 				<Badge variant="outline">{pendidikanOptions.length} jenjang</Badge>
 			</div>
 			<div class="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-4">
@@ -252,7 +264,12 @@
 		<div class="grid grid-cols-1 gap-6 md:grid-cols-2">
 			<section aria-labelledby="gender-heading">
 				<div class="mb-3 flex items-center justify-between">
-					<h2 id="gender-heading" class="text-base font-semibold">By Gender</h2>
+					<h2
+						id="gender-heading"
+						class="text-xl font-[var(--font-cal-sans)] font-semibold tracking-tight"
+					>
+						By Gender
+					</h2>
 					<Badge variant="outline">2 kategori</Badge>
 				</div>
 				<div class="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2">
@@ -288,7 +305,12 @@
 
 			<section aria-labelledby="disabilitas-heading">
 				<div class="mb-3 flex items-center justify-between">
-					<h2 id="disabilitas-heading" class="text-base font-semibold">By Disabilitas</h2>
+					<h2
+						id="disabilitas-heading"
+						class="text-xl font-[var(--font-cal-sans)] font-semibold tracking-tight"
+					>
+						By Disabilitas
+					</h2>
 					<Badge variant="outline">Ya / Tidak</Badge>
 				</div>
 				<div class="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2">
