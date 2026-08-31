@@ -37,6 +37,12 @@
 		return result;
 	});
 
+	const filteredSorted = $derived(
+		[...filtered].sort(
+			(a, b) => b.visit_date.localeCompare(a.visit_date) || b.created_at.localeCompare(a.created_at)
+		)
+	);
+
 	const handleView = (visit: GuestVisit): void => {
 		selected = visit;
 		dialogOpen = true;
@@ -64,7 +70,7 @@
 			<h1 class="text-2xl font-[var(--font-cal-sans)] font-semibold tracking-tight">
 				Daftar Kunjungan
 			</h1>
-			<Badge variant="secondary">{filtered.length} dari {visits.length}</Badge>
+			<Badge variant="secondary">{filteredSorted.length} dari {visits.length}</Badge>
 		</div>
 		<Button variant="outline" size="sm" onclick={handleReset}>Reset filter</Button>
 	</div>
@@ -111,7 +117,7 @@
 	</Card.Root>
 </div>
 
-{#if filtered.length === 0}
+{#if filteredSorted.length === 0}
 	<Card.Root>
 		<Card.Content class="py-12 text-center">
 			<p class="text-sm font-medium">Tidak ada data yang cocok</p>
@@ -122,7 +128,7 @@
 		</Card.Content>
 	</Card.Root>
 {:else}
-	<GuestDataTable data={filtered} onView={handleView} />
+	<GuestDataTable data={filteredSorted} onView={handleView} />
 {/if}
 
 <GuestDetail bind:open={dialogOpen} visit={selected} onClose={handleClose} />

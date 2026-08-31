@@ -15,9 +15,8 @@ export const createGuestColumns = (onView: (visit: GuestVisit) => void) =>
 			header: 'No',
 			enableHiding: false,
 			meta: { width: 72 } as ColMeta,
-			cell: ({ row, table }) => {
-				const pagination = table.atoms.pagination.get();
-				const globalIndex = pagination.pageIndex * pagination.pageSize + row.index + 1;
+			cell: ({ row }) => {
+				const n = row.index + 1;
 				const snippet = createRawSnippet<[{ n: number }]>((getN) => {
 					const { n } = getN();
 					return {
@@ -25,7 +24,7 @@ export const createGuestColumns = (onView: (visit: GuestVisit) => void) =>
 							`<div class="flex justify-center text-center tabular-nums text-xs whitespace-nowrap">${n}</div>`
 					};
 				});
-				return renderSnippet(snippet, { n: globalIndex });
+				return renderSnippet(snippet, { n });
 			}
 		}),
 		columnHelper.accessor('nama', {
