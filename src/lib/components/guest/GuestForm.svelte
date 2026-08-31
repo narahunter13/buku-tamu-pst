@@ -2,6 +2,7 @@
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import { tick } from 'svelte';
+	import { slide } from 'svelte/transition';
 	import { toast } from 'svelte-sonner';
 	import { Check, ChevronsUpDown } from '@lucide/svelte';
 	import * as Card from '$lib/components/ui/card';
@@ -321,20 +322,22 @@
 			</Field.Field>
 
 			{#if showPekerjaanLainnya}
-				<Field.Field data-invalid={errors.pekerjaan_lainnya ? true : undefined}>
-					<Field.Label for="pekerjaanLainnya">7. Tuliskan pekerjaan Anda *</Field.Label>
-					<Input
-						id="pekerjaanLainnya"
-						name="pekerjaanLainnya"
-						placeholder="Tuliskan pekerjaan"
-						bind:value={form.pekerjaanLainnya}
-						aria-invalid={errors.pekerjaan_lainnya ? true : undefined}
-						data-invalid={errors.pekerjaan_lainnya ? 'true' : undefined}
-					/>
-					{#if errors.pekerjaan_lainnya}
-						<Field.Error>{errors.pekerjaan_lainnya}</Field.Error>
-					{/if}
-				</Field.Field>
+				<div transition:slide={{ duration: 200 }}>
+					<Field.Field data-invalid={errors.pekerjaan_lainnya ? true : undefined}>
+						<Field.Label for="pekerjaanLainnya">7. Tuliskan pekerjaan Anda *</Field.Label>
+						<Input
+							id="pekerjaanLainnya"
+							name="pekerjaanLainnya"
+							placeholder="Tuliskan pekerjaan"
+							bind:value={form.pekerjaanLainnya}
+							aria-invalid={errors.pekerjaan_lainnya ? true : undefined}
+							data-invalid={errors.pekerjaan_lainnya ? 'true' : undefined}
+						/>
+						{#if errors.pekerjaan_lainnya}
+							<Field.Error>{errors.pekerjaan_lainnya}</Field.Error>
+						{/if}
+					</Field.Field>
+				</div>
 			{/if}
 
 			<Field.Field data-invalid={errors.tahun_lahir ? true : undefined}>
@@ -410,60 +413,65 @@
 			</Field.Field>
 
 			{#if showProvinsi}
-				<Field.Field data-invalid={errors.provinsi ? true : undefined}>
-					<Field.Label for="provinsi">11. Provinsi *</Field.Label>
-					<Popover.Root bind:open={provinsiOpen}>
-						<Popover.Trigger bind:ref={provinsiTriggerRef}>
-							{#snippet child({ props })}
-								<Button
-									{...props}
-									variant="outline"
-									role="combobox"
-									aria-expanded={provinsiOpen}
-									aria-invalid={errors.provinsi ? true : undefined}
-									data-invalid={errors.provinsi ? true : undefined}
-									class="h-9 w-full justify-between rounded-sm px-3 text-xs font-normal"
-								>
-									{form.provinsi || 'Pilih provinsi'}
-									<ChevronsUpDown class="size-4 opacity-50" />
-								</Button>
-							{/snippet}
-						</Popover.Trigger>
-						<Popover.Content
-							class="w-[var(--bits-popover-anchor-width)] rounded-sm p-0"
-							align="start"
-						>
-							<Command.Root>
-								<Command.Input placeholder="Cari provinsi..." class="h-9 text-xs" />
-								<Command.List class="max-h-60 overflow-y-auto">
-									<Command.Empty class="p-2 text-xs">Tidak ditemukan.</Command.Empty>
-									<Command.Group>
-										{#each provinces as prov (prov)}
-											<Command.Item
-												value={prov}
-												onSelect={() => {
-													form.provinsi = prov;
-													closeAndFocusProvinsi();
-												}}
-												class="text-xs"
-											>
-												{prov}
-												<Check
-													class="ml-auto size-4 {form.provinsi === prov
-														? 'opacity-100'
-														: 'opacity-0'}"
-												/>
-											</Command.Item>
-										{/each}
-									</Command.Group>
-								</Command.List>
-							</Command.Root>
-						</Popover.Content>
-					</Popover.Root>
-					{#if errors.provinsi}
-						<Field.Error>{errors.provinsi}</Field.Error>
-					{/if}
-				</Field.Field>
+				<div transition:slide={{ duration: 200 }}>
+					<Field.Field data-invalid={errors.provinsi ? true : undefined}>
+						<Field.Label for="provinsi">11. Provinsi *</Field.Label>
+						<Popover.Root bind:open={provinsiOpen}>
+							<Popover.Trigger bind:ref={provinsiTriggerRef}>
+								{#snippet child({ props })}
+									<Button
+										{...props}
+										variant="outline"
+										role="combobox"
+										aria-expanded={provinsiOpen}
+										aria-invalid={errors.provinsi ? true : undefined}
+										data-invalid={errors.provinsi ? true : undefined}
+										class="h-9 w-full justify-between rounded-sm px-3 text-xs font-normal"
+									>
+										{form.provinsi || 'Pilih provinsi'}
+										<ChevronsUpDown class="size-4 opacity-50" />
+									</Button>
+								{/snippet}
+							</Popover.Trigger>
+							<Popover.Content
+								class="w-[var(--bits-popover-anchor-width)] rounded-sm p-0"
+								align="start"
+								side="bottom"
+								sideOffset={8}
+								collisionPadding={8}
+							>
+								<Command.Root>
+									<Command.Input placeholder="Cari provinsi..." class="h-9 text-xs" />
+									<Command.List class="max-h-60 overflow-y-auto">
+										<Command.Empty class="p-2 text-xs">Tidak ditemukan.</Command.Empty>
+										<Command.Group>
+											{#each provinces as prov (prov)}
+												<Command.Item
+													value={prov}
+													onSelect={() => {
+														form.provinsi = prov;
+														closeAndFocusProvinsi();
+													}}
+													class="text-xs"
+												>
+													{prov}
+													<Check
+														class="ml-auto size-4 {form.provinsi === prov
+															? 'opacity-100'
+															: 'opacity-0'}"
+													/>
+												</Command.Item>
+											{/each}
+										</Command.Group>
+									</Command.List>
+								</Command.Root>
+							</Popover.Content>
+						</Popover.Root>
+						{#if errors.provinsi}
+							<Field.Error>{errors.provinsi}</Field.Error>
+						{/if}
+					</Field.Field>
+				</div>
 			{/if}
 
 			<Field.Field data-invalid={errors.kab_kota ? true : undefined}>
@@ -504,29 +512,31 @@
 			</Field.Field>
 
 			{#if showTipeDisabilitas}
-				<Field.Field data-invalid={errors.tipe_disabilitas ? true : undefined}>
-					<Field.Label for="tipeDisabilitas">14. Tipe Disabilitas *</Field.Label>
-					<Select.Root type="single" bind:value={form.tipeDisabilitas}>
-						<Select.Trigger
-							id="tipeDisabilitas"
-							aria-invalid={errors.tipe_disabilitas ? true : undefined}
-							data-invalid={errors.tipe_disabilitas ? 'true' : undefined}
-							class="w-full"
-						>
-							<span data-slot="select-value">
-								{form.tipeDisabilitas || 'Pilih tipe disabilitas'}
-							</span>
-						</Select.Trigger>
-						<Select.Content>
-							{#each tipeDisabilitasOptions as opt (opt)}
-								<Select.Item value={opt} label={opt}>{opt}</Select.Item>
-							{/each}
-						</Select.Content>
-					</Select.Root>
-					{#if errors.tipe_disabilitas}
-						<Field.Error>{errors.tipe_disabilitas}</Field.Error>
-					{/if}
-				</Field.Field>
+				<div transition:slide={{ duration: 200 }}>
+					<Field.Field data-invalid={errors.tipe_disabilitas ? true : undefined}>
+						<Field.Label for="tipeDisabilitas">14. Tipe Disabilitas *</Field.Label>
+						<Select.Root type="single" bind:value={form.tipeDisabilitas}>
+							<Select.Trigger
+								id="tipeDisabilitas"
+								aria-invalid={errors.tipe_disabilitas ? true : undefined}
+								data-invalid={errors.tipe_disabilitas ? 'true' : undefined}
+								class="w-full"
+							>
+								<span data-slot="select-value">
+									{form.tipeDisabilitas || 'Pilih tipe disabilitas'}
+								</span>
+							</Select.Trigger>
+							<Select.Content>
+								{#each tipeDisabilitasOptions as opt (opt)}
+									<Select.Item value={opt} label={opt}>{opt}</Select.Item>
+								{/each}
+							</Select.Content>
+						</Select.Root>
+						{#if errors.tipe_disabilitas}
+							<Field.Error>{errors.tipe_disabilitas}</Field.Error>
+						{/if}
+					</Field.Field>
+				</div>
 			{/if}
 
 			<Field.Field data-invalid={errors.keperluan ? true : undefined} class="md:col-span-2">
@@ -550,24 +560,27 @@
 			</Field.Field>
 
 			{#if showKeperluanLainnya}
-				<Field.Field
-					data-invalid={errors.keperluan_lainnya ? true : undefined}
-					class="md:col-span-2"
-				>
-					<Field.Label for="keperluanLainnya">16. Tuliskan keperluan kunjungan Anda *</Field.Label>
-					<Textarea
-						id="keperluanLainnya"
-						name="keperluanLainnya"
-						placeholder="Tuliskan keperluan"
-						bind:value={form.keperluanLainnya}
-						aria-invalid={errors.keperluan_lainnya ? true : undefined}
-						data-invalid={errors.keperluan_lainnya ? 'true' : undefined}
-						rows={3}
-					/>
-					{#if errors.keperluan_lainnya}
-						<Field.Error>{errors.keperluan_lainnya}</Field.Error>
-					{/if}
-				</Field.Field>
+				<div transition:slide={{ duration: 200 }} class="md:col-span-2">
+					<Field.Field
+						data-invalid={errors.keperluan_lainnya ? true : undefined}
+						class="md:col-span-2"
+					>
+						<Field.Label for="keperluanLainnya">16. Tuliskan keperluan kunjungan Anda *</Field.Label
+						>
+						<Textarea
+							id="keperluanLainnya"
+							name="keperluanLainnya"
+							placeholder="Tuliskan keperluan"
+							bind:value={form.keperluanLainnya}
+							aria-invalid={errors.keperluan_lainnya ? true : undefined}
+							data-invalid={errors.keperluan_lainnya ? 'true' : undefined}
+							rows={3}
+						/>
+						{#if errors.keperluan_lainnya}
+							<Field.Error>{errors.keperluan_lainnya}</Field.Error>
+						{/if}
+					</Field.Field>
+				</div>
 			{/if}
 		</form>
 	</Card.Content>

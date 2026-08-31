@@ -72,305 +72,279 @@
 	});
 </script>
 
-<div class="min-h-screen bg-background">
-	<header class="sticky top-0 z-10 border-b bg-background/80 backdrop-blur">
-		<div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
-			<a
-				href="/"
-				class="rounded-sm text-xs font-semibold focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
-			>
-				BPS Kota Pagar Alam - PST
-			</a>
-			<nav class="flex items-center gap-1" aria-label="Navigasi utama">
-				<Button href="/" variant="ghost" size="sm">Form</Button>
-				<Button href="/daftar" variant="ghost" size="sm">Daftar</Button>
-				<Button href="/statistik" variant="secondary" size="sm" aria-current="page"
-					>Statistik</Button
-				>
-			</nav>
-		</div>
-	</header>
+<div class="mb-6 flex flex-col gap-1">
+	<h1 class="text-2xl font-[var(--font-cal-sans)] font-semibold tracking-tight">
+		Statistik Kunjungan
+	</h1>
+	<p class="text-xs text-muted-foreground">
+		Ringkasan kunjungan PST berdasarkan data tersimpan di browser (localStorage). Total data: {total}
+		kunjungan.
+	</p>
+</div>
 
-	<main class="mx-auto max-w-6xl px-4 py-6">
-		<div class="mb-6 flex flex-col gap-1">
-			<h1 class="text-2xl font-[var(--font-cal-sans)] font-semibold tracking-tight">
-				Statistik Kunjungan
-			</h1>
-			<p class="text-xs text-muted-foreground">
-				Ringkasan kunjungan PST berdasarkan data tersimpan di browser (localStorage). Total data: {total}
-				kunjungan.
-			</p>
-		</div>
+<section aria-labelledby="summary-heading" class="mb-6">
+	<h2 id="summary-heading" class="sr-only">Ringkasan total dan hari ini</h2>
+	<div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+		<Card.Root>
+			<Card.Header class="pb-2">
+				<Card.Description>Total Kunjungan</Card.Description>
+				<Card.Title class="text-3xl tabular-nums">{total}</Card.Title>
+			</Card.Header>
+			<Card.Content>
+				<p class="text-xs text-muted-foreground">
+					Seluruh data kunjungan tersimpan (dummy + input baru).
+				</p>
+				<div class="mt-3 flex items-center gap-2">
+					<Badge variant="secondary">{total} record</Badge>
+				</div>
+			</Card.Content>
+		</Card.Root>
 
-		<section aria-labelledby="summary-heading" class="mb-6">
-			<h2 id="summary-heading" class="sr-only">Ringkasan total dan hari ini</h2>
-			<div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-				<Card.Root>
-					<Card.Header class="pb-2">
-						<Card.Description>Total Kunjungan</Card.Description>
-						<Card.Title class="text-3xl tabular-nums">{total}</Card.Title>
-					</Card.Header>
-					<Card.Content>
-						<p class="text-xs text-muted-foreground">
-							Seluruh data kunjungan tersimpan (dummy + input baru).
-						</p>
-						<div class="mt-3 flex items-center gap-2">
-							<Badge variant="secondary">{total} record</Badge>
-						</div>
-					</Card.Content>
-				</Card.Root>
+		<Card.Root>
+			<Card.Header class="pb-2">
+				<Card.Description>Hari Ini</Card.Description>
+				<Card.Title class="text-3xl tabular-nums">{todayCount}</Card.Title>
+			</Card.Header>
+			<Card.Content>
+				<p class="text-xs text-muted-foreground">
+					Filter visit_date === {todayIso} (ISO hari ini).
+				</p>
+				<div class="mt-3 flex items-center gap-2">
+					<Badge variant={todayCount > 0 ? 'default' : 'secondary'}>{todayCount} hari ini</Badge>
+					<span class="text-xs text-muted-foreground">
+						{calcPercent(todayCount, total)}% dari total
+					</span>
+				</div>
+			</Card.Content>
+		</Card.Root>
 
-				<Card.Root>
-					<Card.Header class="pb-2">
-						<Card.Description>Hari Ini</Card.Description>
-						<Card.Title class="text-3xl tabular-nums">{todayCount}</Card.Title>
-					</Card.Header>
-					<Card.Content>
-						<p class="text-xs text-muted-foreground">
-							Filter visit_date === {todayIso} (ISO hari ini).
-						</p>
-						<div class="mt-3 flex items-center gap-2">
-							<Badge variant={todayCount > 0 ? 'default' : 'secondary'}>
-								{todayCount} hari ini
-							</Badge>
-							<span class="text-xs text-muted-foreground">
-								{calcPercent(todayCount, total)}% dari total
-							</span>
-						</div>
-					</Card.Content>
-				</Card.Root>
-
-				<Card.Root class="md:col-span-2 lg:col-span-1">
-					<Card.Header class="pb-2">
-						<Card.Description>Rasio Hari Ini</Card.Description>
-						<Card.Title class="text-3xl tabular-nums">{calcPercent(todayCount, total)}%</Card.Title>
-					</Card.Header>
-					<Card.Content>
-						<p class="text-xs text-muted-foreground">
-							Persentase kunjungan hari ini terhadap total.
-						</p>
-						<div class="mt-3">
-							<div
-								class="h-2 w-full overflow-hidden rounded-full bg-muted"
-								role="progressbar"
-								aria-valuenow={calcPercent(todayCount, total)}
-								aria-valuemin={0}
-								aria-valuemax={100}
-								aria-label="Persentase hari ini"
-							>
-								<div
-									class="h-full rounded-full bg-primary transition-all"
-									style:width={`${calcPercent(todayCount, total)}%`}
-								></div>
-							</div>
-						</div>
-					</Card.Content>
-				</Card.Root>
-			</div>
-		</section>
-
-		<Separator class="my-6" />
-
-		<section aria-labelledby="keperluan-heading" class="mb-6">
-			<div class="mb-3 flex items-center justify-between">
-				<h2
-					id="keperluan-heading"
-					class="text-xl font-[var(--font-cal-sans)] font-semibold tracking-tight"
-				>
-					By Keperluan
-				</h2>
-				<Badge variant="outline">{keperluanOptions.length} kategori</Badge>
-			</div>
-			<div class="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
-				{#each byKeperluan as item (item.key)}
-					<Card.Root>
-						<Card.Header class="pb-2">
-							<Card.Title class="text-sm leading-none font-medium">{item.key}</Card.Title>
-							<Card.Description class="text-xs">
-								{item.count} kunjungan - {item.percent}%
-							</Card.Description>
-						</Card.Header>
-						<Card.Content>
-							<div class="flex items-center justify-between">
-								<span class="text-2xl font-semibold tabular-nums">{item.count}</span>
-								<Badge variant={item.count > 0 ? 'secondary' : 'outline'}>{item.percent}%</Badge>
-							</div>
-							<div
-								class="mt-3 h-2 w-full overflow-hidden rounded-full bg-muted"
-								role="progressbar"
-								aria-valuenow={item.percent}
-								aria-valuemin={0}
-								aria-valuemax={100}
-								aria-label={`Progress ${item.key}`}
-							>
-								<div
-									class="h-full rounded-full bg-primary transition-all"
-									style:width={`${item.percent}%`}
-								></div>
-							</div>
-						</Card.Content>
-					</Card.Root>
-				{/each}
-			</div>
-		</section>
-
-		<Separator class="my-6" />
-
-		<section aria-labelledby="pendidikan-heading" class="mb-6">
-			<div class="mb-3 flex items-center justify-between">
-				<h2
-					id="pendidikan-heading"
-					class="text-xl font-[var(--font-cal-sans)] font-semibold tracking-tight"
-				>
-					By Pendidikan
-				</h2>
-				<Badge variant="outline">{pendidikanOptions.length} jenjang</Badge>
-			</div>
-			<div class="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-4">
-				{#each byPendidikan as item (item.key)}
-					<Card.Root>
-						<Card.Header class="pb-2">
-							<Card.Title class="text-sm leading-none font-medium">{item.key}</Card.Title>
-							<Card.Description class="text-xs">
-								{item.count} kunjungan - {item.percent}%
-							</Card.Description>
-						</Card.Header>
-						<Card.Content>
-							<div class="flex items-center justify-between">
-								<span class="text-2xl font-semibold tabular-nums">{item.count}</span>
-								<Badge variant={item.count > 0 ? 'secondary' : 'outline'}>{item.percent}%</Badge>
-							</div>
-							<div
-								class="mt-3 h-2 w-full overflow-hidden rounded-full bg-muted"
-								role="progressbar"
-								aria-valuenow={item.percent}
-								aria-valuemin={0}
-								aria-valuemax={100}
-								aria-label={`Progress ${item.key}`}
-							>
-								<div
-									class="h-full rounded-full bg-primary transition-all"
-									style:width={`${item.percent}%`}
-								></div>
-							</div>
-						</Card.Content>
-					</Card.Root>
-				{/each}
-			</div>
-		</section>
-
-		<Separator class="my-6" />
-
-		<div class="grid grid-cols-1 gap-6 md:grid-cols-2">
-			<section aria-labelledby="gender-heading">
-				<div class="mb-3 flex items-center justify-between">
-					<h2
-						id="gender-heading"
-						class="text-xl font-[var(--font-cal-sans)] font-semibold tracking-tight"
+		<Card.Root class="md:col-span-2 lg:col-span-1">
+			<Card.Header class="pb-2">
+				<Card.Description>Rasio Hari Ini</Card.Description>
+				<Card.Title class="text-3xl tabular-nums">{calcPercent(todayCount, total)}%</Card.Title>
+			</Card.Header>
+			<Card.Content>
+				<p class="text-xs text-muted-foreground">Persentase kunjungan hari ini terhadap total.</p>
+				<div class="mt-3">
+					<div
+						class="h-2 w-full overflow-hidden rounded-full bg-muted"
+						role="progressbar"
+						aria-valuenow={calcPercent(todayCount, total)}
+						aria-valuemin={0}
+						aria-valuemax={100}
+						aria-label="Persentase hari ini"
 					>
-						By Gender
-					</h2>
-					<Badge variant="outline">2 kategori</Badge>
+						<div
+							class="h-full rounded-full bg-primary transition-all"
+							style:width={`${calcPercent(todayCount, total)}%`}
+						></div>
+					</div>
 				</div>
-				<div class="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2">
-					{#each byGender as item (item.key)}
-						<Card.Root>
-							<Card.Header class="pb-2">
-								<Card.Title class="text-sm font-medium">{item.key}</Card.Title>
-								<Card.Description>{item.count} kunjungan</Card.Description>
-							</Card.Header>
-							<Card.Content>
-								<div class="flex items-center justify-between">
-									<span class="text-2xl font-semibold tabular-nums">{item.count}</span>
-									<Badge variant="secondary">{item.percent}%</Badge>
-								</div>
-								<div
-									class="mt-3 h-2 w-full overflow-hidden rounded-full bg-muted"
-									role="progressbar"
-									aria-valuenow={item.percent}
-									aria-valuemin={0}
-									aria-valuemax={100}
-									aria-label={`Progress ${item.key}`}
-								>
-									<div
-										class="h-full rounded-full bg-primary transition-all"
-										style:width={`${item.percent}%`}
-									></div>
-								</div>
-							</Card.Content>
-						</Card.Root>
-					{/each}
-				</div>
-			</section>
+			</Card.Content>
+		</Card.Root>
+	</div>
+</section>
 
-			<section aria-labelledby="disabilitas-heading">
-				<div class="mb-3 flex items-center justify-between">
-					<h2
-						id="disabilitas-heading"
-						class="text-xl font-[var(--font-cal-sans)] font-semibold tracking-tight"
+<Separator class="my-6" />
+
+<section aria-labelledby="keperluan-heading" class="mb-6">
+	<div class="mb-3 flex items-center justify-between">
+		<h2
+			id="keperluan-heading"
+			class="text-xl font-[var(--font-cal-sans)] font-semibold tracking-tight"
+		>
+			By Keperluan
+		</h2>
+		<Badge variant="outline">{keperluanOptions.length} kategori</Badge>
+	</div>
+	<div class="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
+		{#each byKeperluan as item (item.key)}
+			<Card.Root>
+				<Card.Header class="pb-2">
+					<Card.Title class="text-sm leading-none font-medium">{item.key}</Card.Title>
+					<Card.Description class="text-xs"
+						>{item.count} kunjungan - {item.percent}%</Card.Description
 					>
-						By Disabilitas
-					</h2>
-					<Badge variant="outline">Ya / Tidak</Badge>
-				</div>
-				<div class="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2">
-					{#each byDisabilitas as item (item.key)}
-						<Card.Root>
-							<Card.Header class="pb-2">
-								<Card.Title class="text-sm font-medium">{item.key}</Card.Title>
-								<Card.Description>{item.count} kunjungan</Card.Description>
-							</Card.Header>
-							<Card.Content>
-								<div class="flex items-center justify-between">
-									<span class="text-2xl font-semibold tabular-nums">{item.count}</span>
-									<Badge variant={item.key === 'Ya' && item.count > 0 ? 'default' : 'secondary'}>
-										{item.percent}%
-									</Badge>
-								</div>
-								<div
-									class="mt-3 h-2 w-full overflow-hidden rounded-full bg-muted"
-									role="progressbar"
-									aria-valuenow={item.percent}
-									aria-valuemin={0}
-									aria-valuemax={100}
-									aria-label={`Progress disabilitas ${item.key}`}
-								>
-									<div
-										class="h-full rounded-full bg-primary transition-all"
-										style:width={`${item.percent}%`}
-									></div>
-								</div>
-							</Card.Content>
-						</Card.Root>
-					{/each}
-				</div>
-			</section>
-		</div>
-
-		{#if total === 0}
-			<Card.Root class="mt-6">
-				<Card.Content class="py-10 text-center">
-					<p class="text-sm font-medium">Belum ada data kunjungan</p>
-					<p class="mt-1 text-xs text-muted-foreground">
-						Isi form di halaman utama untuk melihat statistik.
-					</p>
-					<Button href="/" variant="outline" size="sm" class="mt-4">Ke Form</Button>
+				</Card.Header>
+				<Card.Content>
+					<div class="flex items-center justify-between">
+						<span class="text-2xl font-semibold tabular-nums">{item.count}</span>
+						<Badge variant={item.count > 0 ? 'secondary' : 'outline'}>{item.percent}%</Badge>
+					</div>
+					<div
+						class="mt-3 h-2 w-full overflow-hidden rounded-full bg-muted"
+						role="progressbar"
+						aria-valuenow={item.percent}
+						aria-valuemin={0}
+						aria-valuemax={100}
+						aria-label={`Progress ${item.key}`}
+					>
+						<div
+							class="h-full rounded-full bg-primary transition-all"
+							style:width={`${item.percent}%`}
+						></div>
+					</div>
 				</Card.Content>
 			</Card.Root>
-		{/if}
+		{/each}
+	</div>
+</section>
 
-		<div
-			class="mt-8 flex flex-wrap items-center justify-between gap-2 border-t pt-4 text-xs text-muted-foreground"
+<Separator class="my-6" />
+
+<section aria-labelledby="pendidikan-heading" class="mb-6">
+	<div class="mb-3 flex items-center justify-between">
+		<h2
+			id="pendidikan-heading"
+			class="text-xl font-[var(--font-cal-sans)] font-semibold tracking-tight"
 		>
-			<p>
-				Data bersumber dari localStorage key <code class="rounded bg-muted px-1 py-0.5"
-					>btpst_mock_visits</code
-				>.
-			</p>
-			<div class="flex items-center gap-2">
-				<Button href="/" variant="ghost" size="sm">Form</Button>
-				<Button href="/daftar" variant="ghost" size="sm">Daftar</Button>
-			</div>
+			By Pendidikan
+		</h2>
+		<Badge variant="outline">{pendidikanOptions.length} jenjang</Badge>
+	</div>
+	<div class="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-4">
+		{#each byPendidikan as item (item.key)}
+			<Card.Root>
+				<Card.Header class="pb-2">
+					<Card.Title class="text-sm leading-none font-medium">{item.key}</Card.Title>
+					<Card.Description class="text-xs"
+						>{item.count} kunjungan - {item.percent}%</Card.Description
+					>
+				</Card.Header>
+				<Card.Content>
+					<div class="flex items-center justify-between">
+						<span class="text-2xl font-semibold tabular-nums">{item.count}</span>
+						<Badge variant={item.count > 0 ? 'secondary' : 'outline'}>{item.percent}%</Badge>
+					</div>
+					<div
+						class="mt-3 h-2 w-full overflow-hidden rounded-full bg-muted"
+						role="progressbar"
+						aria-valuenow={item.percent}
+						aria-valuemin={0}
+						aria-valuemax={100}
+						aria-label={`Progress ${item.key}`}
+					>
+						<div
+							class="h-full rounded-full bg-primary transition-all"
+							style:width={`${item.percent}%`}
+						></div>
+					</div>
+				</Card.Content>
+			</Card.Root>
+		{/each}
+	</div>
+</section>
+
+<Separator class="my-6" />
+
+<div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+	<section aria-labelledby="gender-heading">
+		<div class="mb-3 flex items-center justify-between">
+			<h2
+				id="gender-heading"
+				class="text-xl font-[var(--font-cal-sans)] font-semibold tracking-tight"
+			>
+				By Gender
+			</h2>
+			<Badge variant="outline">2 kategori</Badge>
 		</div>
-	</main>
+		<div class="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2">
+			{#each byGender as item (item.key)}
+				<Card.Root>
+					<Card.Header class="pb-2">
+						<Card.Title class="text-sm font-medium">{item.key}</Card.Title>
+						<Card.Description>{item.count} kunjungan</Card.Description>
+					</Card.Header>
+					<Card.Content>
+						<div class="flex items-center justify-between">
+							<span class="text-2xl font-semibold tabular-nums">{item.count}</span>
+							<Badge variant="secondary">{item.percent}%</Badge>
+						</div>
+						<div
+							class="mt-3 h-2 w-full overflow-hidden rounded-full bg-muted"
+							role="progressbar"
+							aria-valuenow={item.percent}
+							aria-valuemin={0}
+							aria-valuemax={100}
+							aria-label={`Progress ${item.key}`}
+						>
+							<div
+								class="h-full rounded-full bg-primary transition-all"
+								style:width={`${item.percent}%`}
+							></div>
+						</div>
+					</Card.Content>
+				</Card.Root>
+			{/each}
+		</div>
+	</section>
+
+	<section aria-labelledby="disabilitas-heading">
+		<div class="mb-3 flex items-center justify-between">
+			<h2
+				id="disabilitas-heading"
+				class="text-xl font-[var(--font-cal-sans)] font-semibold tracking-tight"
+			>
+				By Disabilitas
+			</h2>
+			<Badge variant="outline">Ya / Tidak</Badge>
+		</div>
+		<div class="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2">
+			{#each byDisabilitas as item (item.key)}
+				<Card.Root>
+					<Card.Header class="pb-2">
+						<Card.Title class="text-sm font-medium">{item.key}</Card.Title>
+						<Card.Description>{item.count} kunjungan</Card.Description>
+					</Card.Header>
+					<Card.Content>
+						<div class="flex items-center justify-between">
+							<span class="text-2xl font-semibold tabular-nums">{item.count}</span>
+							<Badge variant={item.key === 'Ya' && item.count > 0 ? 'default' : 'secondary'}>
+								{item.percent}%
+							</Badge>
+						</div>
+						<div
+							class="mt-3 h-2 w-full overflow-hidden rounded-full bg-muted"
+							role="progressbar"
+							aria-valuenow={item.percent}
+							aria-valuemin={0}
+							aria-valuemax={100}
+							aria-label={`Progress disabilitas ${item.key}`}
+						>
+							<div
+								class="h-full rounded-full bg-primary transition-all"
+								style:width={`${item.percent}%`}
+							></div>
+						</div>
+					</Card.Content>
+				</Card.Root>
+			{/each}
+		</div>
+	</section>
+</div>
+
+{#if total === 0}
+	<Card.Root class="mt-6">
+		<Card.Content class="py-10 text-center">
+			<p class="text-sm font-medium">Belum ada data kunjungan</p>
+			<p class="mt-1 text-xs text-muted-foreground">
+				Isi form di halaman utama untuk melihat statistik.
+			</p>
+			<Button href="/" variant="outline" size="sm" class="mt-4">Ke Form</Button>
+		</Card.Content>
+	</Card.Root>
+{/if}
+
+<div
+	class="mt-8 flex flex-wrap items-center justify-between gap-2 border-t pt-4 text-xs text-muted-foreground"
+>
+	<p>
+		Data bersumber dari localStorage key <code class="rounded bg-muted px-1 py-0.5"
+			>btpst_mock_visits</code
+		>.
+	</p>
+	<div class="flex items-center gap-2">
+		<Button href="/" variant="ghost" size="sm">Form</Button>
+		<Button href="/daftar" variant="ghost" size="sm">Daftar</Button>
+	</div>
 </div>

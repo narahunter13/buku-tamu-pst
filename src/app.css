@@ -148,4 +148,63 @@
 	a {
 		color: var(--color-action-blue);
 	}
+	input,
+	textarea,
+	select,
+	[data-slot='select-trigger'],
+	[data-slot='button'] {
+		transition-property: color, background-color, border-color, box-shadow, transform, opacity;
+		transition-duration: 200ms;
+		transition-timing-function: ease-out;
+	}
+}
+
+@layer utilities {
+	.scrollbar-thin {
+		scrollbar-width: thin;
+		scrollbar-color: rgba(36, 36, 36, 0.2) transparent;
+	}
+	.scrollbar-thin::-webkit-scrollbar {
+		width: 6px;
+		height: 6px;
+	}
+	.scrollbar-thin::-webkit-scrollbar-thumb {
+		background: rgba(36, 36, 36, 0.2);
+		border-radius: 9999px;
+	}
+	.scrollbar-thin::-webkit-scrollbar-track {
+		background: transparent;
+	}
+	@keyframes animate-in {
+		from {
+			opacity: 0;
+			transform: translateY(-4px) scale(0.96);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0) scale(1);
+		}
+	}
+	@keyframes animate-out {
+		from {
+			opacity: 1;
+			transform: translateY(0) scale(1);
+		}
+		to {
+			opacity: 0;
+			transform: translateY(-4px) scale(0.96);
+		}
+	}
+	.animate-in {
+		animation: animate-in 0.2s ease-out;
+	}
+	.animate-out {
+		animation: animate-out 0.15s ease-in;
+	}
+	.fade-in-0 {
+		animation: animate-in 0.2s ease-out;
+	}
+	.zoom-in-95 {
+		transform-origin: var(--transform-origin);
+	}
 }
