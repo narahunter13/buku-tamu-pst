@@ -20,6 +20,44 @@ const doDestroy = async (): Promise<void> => {
 	}
 };
 
+export const minimizeWindow = async (): Promise<void> => {
+	if (typeof window === 'undefined') return;
+	try {
+		if (!isTauri()) return;
+	} catch {
+		return;
+	}
+	try {
+		await getCurrentWindow().minimize();
+	} catch {
+		// ignore
+	}
+};
+
+export const closeWindowWithConfirm = async (): Promise<void> => {
+	if (typeof window === 'undefined') return;
+	let isTauriEnv = false;
+	try {
+		isTauriEnv = isTauri();
+	} catch {
+		isTauriEnv = false;
+	}
+	if (!isTauriEnv) return;
+	try {
+		const confirmed = await confirm('Apakah Anda yakin ingin menutup aplikasi?', {
+			title: 'Konfirmasi',
+			kind: 'warning'
+		});
+		if (confirmed) {
+			forceClose = true;
+			await doDestroy();
+		}
+	} catch {
+		forceClose = true;
+		await doDestroy();
+	}
+};
+
 export const setupCloseHandler = async (): Promise<void> => {
 	if (registered) return;
 	if (typeof window === 'undefined') return;

@@ -135,8 +135,50 @@
 	* {
 		@apply border-border outline-ring/50;
 	}
+	html {
+		height: 100%;
+		overflow: hidden;
+		overscroll-behavior: none;
+		-webkit-tap-highlight-color: transparent;
+		-webkit-text-size-adjust: 100%;
+		touch-action: manipulation;
+		scrollbar-width: thin;
+		scrollbar-color: rgba(36, 36, 36, 0.2) transparent;
+	}
 	body {
 		@apply bg-paper font-inter text-sm leading-5 text-graphite antialiased;
+		height: 100%;
+		min-height: 100dvh;
+		overflow: hidden;
+		overscroll-behavior: none;
+		touch-action: manipulation;
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
+		user-select: none;
+		-webkit-user-select: none;
+	}
+	/* native selection only on editable */
+	input,
+	textarea,
+	[contenteditable='true'] {
+		user-select: text;
+		-webkit-user-select: text;
+	}
+	* {
+		-webkit-user-drag: none;
+	}
+	img,
+	svg {
+		-webkit-user-drag: none;
+	}
+	input,
+	textarea,
+	select,
+	[data-slot='select-trigger'],
+	[data-slot='button'] {
+		transition-property: color, background-color, border-color, box-shadow, transform, opacity;
+		transition-duration: 200ms;
+		transition-timing-function: ease-out;
 	}
 	h1,
 	h2,
@@ -148,14 +190,39 @@
 	a {
 		color: var(--color-action-blue);
 	}
-	input,
-	textarea,
-	select,
-	[data-slot='select-trigger'],
-	[data-slot='button'] {
-		transition-property: color, background-color, border-color, box-shadow, transform, opacity;
-		transition-duration: 200ms;
-		transition-timing-function: ease-out;
+	::selection {
+		background: oklch(0.92 0 0);
+	}
+	[data-tauri-drag-region] {
+		app-region: drag;
+		-webkit-app-region: drag;
+	}
+	[data-tauri-drag-region='false'],
+	[data-tauri-drag-region='false'] * {
+		app-region: no-drag;
+		-webkit-app-region: no-drag;
+	}
+	/* hide browser autofill / suggestions UI chrome */
+	input::-webkit-contacts-auto-fill-button,
+	input::-webkit-credentials-auto-fill-button {
+		visibility: hidden;
+		display: none !important;
+		pointer-events: none;
+	}
+	input::-ms-reveal,
+	input::-ms-clear {
+		display: none;
+	}
+	input:-webkit-autofill,
+	textarea:-webkit-autofill,
+	select:-webkit-autofill {
+		transition: background-color 9999s ease-out 0s;
+	}
+	/* disable native scroll bounce + text size adjust on desktop webview */
+	@media (prefers-reduced-motion: reduce) {
+		* {
+			scroll-behavior: auto !important;
+		}
 	}
 }
 

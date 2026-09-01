@@ -339,13 +339,3 @@
 {/if}
 
 <GuestDetail bind:open={dialogOpen} visit={selected} onClose={handleClose} />
-
-<div
-	class="mt-8 flex flex-wrap items-center justify-between gap-2 border-t pt-4 text-sm text-muted-foreground"
->
-	<p>Rekap disaring dari kunjungan dengan visit_date YYYY-MM-DD (Asia/Jakarta).</p>
-	<div class="flex items-center gap-2">
-		<Button href="/statistik" variant="ghost" size="sm">Statistik</Button>
-		<Button href="/daftar" variant="ghost" size="sm">Daftar</Button>
-	</div>
-</div>

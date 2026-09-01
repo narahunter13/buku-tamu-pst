@@ -20,11 +20,11 @@
 				"minHeight": 600,
 				"fullscreen": false,
 				"maximized": true,
-				"resizable": false,
+				"resizable": true,
 				"maximizable": false,
 				"minimizable": true,
 				"closable": true,
-				"decorations": true,
+				"decorations": false,
 				"center": true,
 				"visible": true
 			}
