@@ -164,7 +164,9 @@
 
 	const todayIso = $derived(getTodayIsoJakarta());
 
-	const todayCount = $derived(visits.filter((v) => v.visit_date === todayIso).length);
+	const todayCount = $derived(
+		visits.filter((v) => String(v.visit_date).slice(0, 10) === todayIso).length
+	);
 
 	const byKeperluan = $derived.by(() => {
 		const map = keperluanOptions.map((k) => ({

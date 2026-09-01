@@ -4,6 +4,11 @@ import { defineConfig } from 'vite';
 
 export default defineConfig({
 	plugins: [tailwindcss(), sveltekit()],
-	server: { port: 1420, strictPort: true, host: '127.0.0.1' },
+	server: {
+		port: 1420,
+		strictPort: true,
+		host: '127.0.0.1',
+		watch: { ignored: ['**/src-tauri/**'] }
+	},
 	preview: { port: 1420, strictPort: true }
 });

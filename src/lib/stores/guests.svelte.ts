@@ -16,8 +16,8 @@ import { dummyVisits } from '$lib/data/dummy';
 const STORAGE_KEY = 'btpst_mock_visits';
 
 const INSERT_COLUMNS =
-	'(nama,gender,instansi,hp,email,pekerjaan,pekerjaan_lainnya,tahun_lahir,pendidikan,negara,provinsi,kab_kota,disabilitas,tipe_disabilitas,keperluan,keperluan_lainnya)';
-const INSERT_PLACEHOLDERS = '$1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16';
+	'(nama,gender,instansi,hp,email,pekerjaan,pekerjaan_lainnya,tahun_lahir,pendidikan,negara,provinsi,kab_kota,disabilitas,tipe_disabilitas,keperluan,keperluan_lainnya,visit_date,created_at)';
+const INSERT_PLACEHOLDERS = '$1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18';
 const INSERT_SQL = `INSERT INTO visits ${INSERT_COLUMNS} VALUES (${INSERT_PLACEHOLDERS})`;
 const SELECT_ALL_SQL = 'SELECT * FROM visits ORDER BY created_at DESC, id DESC';
 
@@ -56,7 +56,11 @@ const rowToVisit = (row: Record<string, unknown>): GuestVisit => ({
 	created_at: String(row.created_at)
 });
 
-const insertParams = (input: GuestInput): (string | number | null)[] => [
+const insertParams = (
+	input: GuestInput,
+	visit_date: string,
+	created_at: string
+): (string | number | null)[] => [
 	input.nama,
 	input.gender,
 	input.instansi,
@@ -72,7 +76,9 @@ const insertParams = (input: GuestInput): (string | number | null)[] => [
 	input.disabilitas,
 	input.tipe_disabilitas,
 	input.keperluan,
-	input.keperluan_lainnya
+	input.keperluan_lainnya,
+	visit_date,
+	created_at
 ];
 
 export const createGuestStore = () => {
@@ -125,7 +131,10 @@ export const createGuestStore = () => {
 		const countRows = await db.select<{ count: number }[]>('SELECT COUNT(*) as count FROM visits');
 		if (countRows[0]?.count === 0) {
 			for (const dummy of dummyVisits) {
-				await db.execute(INSERT_SQL, insertParams(dummy));
+				await db.execute(
+					INSERT_SQL,
+					insertParams(dummy, dummy.visit_date, dummy.created_at)
+				);
 			}
 		}
 	};
@@ -151,7 +160,8 @@ export const createGuestStore = () => {
 
 	const add = async (input: GuestInput): Promise<GuestVisit> => {
 		if (isTauriEnv() && db) {
-			await db.execute(INSERT_SQL, insertParams(input));
+			const jakarta = getNowJakartaParts();
+			await db.execute(INSERT_SQL, insertParams(input, jakarta.visit_date, jakarta.created_at));
 			const rows = await db.select<Record<string, unknown>[]>(
 				'SELECT * FROM visits WHERE id = last_insert_rowid()'
 			);
@@ -209,7 +219,10 @@ export const createGuestStore = () => {
 		if (isTauriEnv() && db) {
 			await db.execute('DELETE FROM visits');
 			for (const dummy of dummyVisits) {
-				await db.execute(INSERT_SQL, insertParams(dummy));
+				await db.execute(
+					INSERT_SQL,
+					insertParams(dummy, dummy.visit_date, dummy.created_at)
+				);
 			}
 			await refresh();
 			return;
