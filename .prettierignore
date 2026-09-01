@@ -15,5 +15,8 @@ build/
 # Skills / docs with code snippets
 .opencode/
 
+# Tauri generated
+src-tauri/gen/
+
 # Miscellaneous
 /static/

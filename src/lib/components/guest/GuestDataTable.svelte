@@ -63,15 +63,15 @@
 
 <div class="overflow-hidden rounded-sm border bg-card">
 	<div class="scrollbar-thin overflow-x-auto">
-		<table class="w-max min-w-full caption-bottom text-sm">
-			<Table.Header class="sticky top-0 z-10 bg-muted/30">
+		<table class="w-max min-w-full caption-bottom text-base">
+			<Table.Header class="bg-muted">
 				{#each table.getHeaderGroups() as headerGroup (headerGroup.id)}
 					<Table.Row>
 						{#each headerGroup.headers as header (header.id)}
 							<Table.Head
 								class={header.column.id === 'no'
-									? 'px-2 text-center text-xs font-medium whitespace-nowrap text-foreground'
-									: 'px-2 text-xs font-medium whitespace-nowrap text-foreground'}
+									? 'px-2 text-center text-sm font-medium whitespace-nowrap text-foreground'
+									: 'px-2 text-sm font-medium whitespace-nowrap text-foreground'}
 								style="min-width: {getColWidth(header.column.columnDef)}px; width: {getColWidth(
 									header.column.columnDef
 								)}px"
@@ -90,8 +90,8 @@
 						{#each row.getVisibleCells() as cell (cell.id)}
 							<Table.Cell
 								class={cell.column.id === 'no'
-									? 'justify-center px-2 py-2 text-center align-middle text-xs whitespace-nowrap'
-									: 'px-2 py-2 align-middle text-xs whitespace-nowrap'}
+									? 'justify-center px-2 py-2 text-center align-middle text-sm whitespace-nowrap'
+									: 'px-2 py-2 align-middle text-sm whitespace-nowrap'}
 								style="min-width: {getColWidth(cell.column.columnDef)}px; width: {getColWidth(
 									cell.column.columnDef
 								)}px"
@@ -104,7 +104,7 @@
 					<Table.Row>
 						<Table.Cell
 							colspan={columns.length}
-							class="h-24 text-center text-xs text-muted-foreground"
+							class="h-24 text-center text-sm text-muted-foreground"
 						>
 							No results.
 						</Table.Cell>
@@ -116,14 +116,14 @@
 
 	<div class="flex flex-wrap items-center justify-between gap-2 border-t p-2 px-4">
 		<div class="flex items-center gap-2">
-			<p class="text-xs text-muted-foreground">
+			<p class="text-sm text-muted-foreground">
 				Halaman {pagination.pageIndex + 1} dari {Math.max(1, pageCount)} - menampilkan {rows.length} dari
 				{totalRows} data
 			</p>
 			<div class="hidden items-center gap-1 sm:flex">
-				<span class="text-xs text-muted-foreground">Rows per page</span>
+				<span class="text-sm text-muted-foreground">Rows per page</span>
 				<Select.Root type="single" value={pageSizeValue} onValueChange={handlePageSizeChange}>
-					<Select.Trigger class="h-7 w-20 text-xs">
+					<Select.Trigger class="h-7 w-20 text-sm">
 						<span data-slot="select-value">{pageSizeValue}</span>
 					</Select.Trigger>
 					<Select.Content>
@@ -139,18 +139,18 @@
 			<Button
 				variant="outline"
 				size="sm"
-				class="h-8 text-xs"
+				class="h-8 text-sm"
 				disabled={!canPrev}
 				onclick={handlePrev}
 			>
 				Prev
 			</Button>
-			<span class="text-xs tabular-nums">{pagination.pageIndex + 1} / {Math.max(1, pageCount)}</span
+			<span class="text-sm tabular-nums">{pagination.pageIndex + 1} / {Math.max(1, pageCount)}</span
 			>
 			<Button
 				variant="outline"
 				size="sm"
-				class="h-8 text-xs"
+				class="h-8 text-sm"
 				disabled={!canNext}
 				onclick={handleNext}
 			>

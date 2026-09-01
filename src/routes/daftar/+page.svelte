@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import type { GuestVisit } from '$lib/types';
 	import { guestStore } from '$lib/stores/guests.svelte';
 	import { keperluanOptions } from '$lib/constants/options';
@@ -58,10 +57,6 @@
 		filterKeperluan = 'all';
 		filterGender = 'all';
 	};
-
-	onMount(() => {
-		guestStore.init();
-	});
 </script>
 
 <div class="mb-4 flex flex-col gap-3">
@@ -120,8 +115,8 @@
 {#if filteredSorted.length === 0}
 	<Card.Root>
 		<Card.Content class="py-12 text-center">
-			<p class="text-sm font-medium">Tidak ada data yang cocok</p>
-			<p class="mt-1 text-xs text-muted-foreground">
+			<p class="text-base font-medium">Tidak ada data yang cocok</p>
+			<p class="mt-1 text-sm text-muted-foreground">
 				Coba ubah kata kunci pencarian atau filter keperluan/gender.
 			</p>
 			<Button variant="outline" size="sm" class="mt-4" onclick={handleReset}>Reset filter</Button>

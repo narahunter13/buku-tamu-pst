@@ -21,7 +21,7 @@ export const createGuestColumns = (onView: (visit: GuestVisit) => void) =>
 					const { n } = getN();
 					return {
 						render: () =>
-							`<div class="flex justify-center text-center tabular-nums text-xs whitespace-nowrap">${n}</div>`
+							`<div class="flex justify-center text-center tabular-nums text-sm whitespace-nowrap">${n}</div>`
 					};
 				});
 				return renderSnippet(snippet, { n });
@@ -36,7 +36,7 @@ export const createGuestColumns = (onView: (visit: GuestVisit) => void) =>
 					const safe = v.replace(/</g, '&lt;').replace(/>/g, '&gt;');
 					return {
 						render: () =>
-							`<div class="text-xs whitespace-nowrap font-medium truncate max-w-[160px]">${safe}</div>`
+							`<div class="text-sm whitespace-nowrap font-medium truncate max-w-[160px]">${safe}</div>`
 					};
 				});
 				return renderSnippet(snippet, { v: row.original.nama });
@@ -55,7 +55,7 @@ export const createGuestColumns = (onView: (visit: GuestVisit) => void) =>
 						: 'bg-background text-foreground border border-border';
 					return {
 						render: () =>
-							`<span class="inline-flex items-center justify-center rounded-sm px-2 py-0.5 text-xs font-medium whitespace-nowrap ${cls}">${gender}</span>`
+							`<span class="inline-flex items-center justify-center rounded-sm px-2 py-0.5 text-sm font-medium whitespace-nowrap ${cls}">${gender}</span>`
 					};
 				});
 				return renderSnippet(snippet, { gender: g });
@@ -70,7 +70,7 @@ export const createGuestColumns = (onView: (visit: GuestVisit) => void) =>
 					const safe = v.replace(/</g, '&lt;').replace(/>/g, '&gt;');
 					return {
 						render: () =>
-							`<div class="text-xs whitespace-nowrap truncate max-w-[160px]" title="${safe}">${safe}</div>`
+							`<div class="text-sm whitespace-nowrap truncate max-w-[160px]" title="${safe}">${safe}</div>`
 					};
 				});
 				return renderSnippet(snippet, { v: row.original.instansi });
@@ -92,7 +92,7 @@ export const createGuestColumns = (onView: (visit: GuestVisit) => void) =>
 						const safe = val.replace(/</g, '&lt;').replace(/>/g, '&gt;');
 						return {
 							render: () =>
-								`<div class="text-xs whitespace-nowrap truncate max-w-[160px]" title="${safe}">${safe}</div>`
+								`<div class="text-sm whitespace-nowrap truncate max-w-[160px]" title="${safe}">${safe}</div>`
 						};
 					});
 					return renderSnippet(snippet, { v });
@@ -115,7 +115,7 @@ export const createGuestColumns = (onView: (visit: GuestVisit) => void) =>
 						const safe = val.replace(/</g, '&lt;').replace(/>/g, '&gt;');
 						return {
 							render: () =>
-								`<span class="inline-flex items-center justify-center rounded-sm bg-secondary text-secondary-foreground px-2 py-0.5 text-xs font-medium whitespace-nowrap truncate max-w-[160px]" title="${safe}">${safe}</span>`
+								`<span class="inline-flex items-center justify-center rounded-sm bg-secondary text-secondary-foreground px-2 py-0.5 text-sm font-medium whitespace-nowrap truncate max-w-[160px]" title="${safe}">${safe}</span>`
 						};
 					});
 					return renderSnippet(snippet, { v });
@@ -130,7 +130,7 @@ export const createGuestColumns = (onView: (visit: GuestVisit) => void) =>
 				const snippet = createRawSnippet<[{ v: string }]>((getV) => {
 					const { v: val } = getV();
 					return {
-						render: () => `<div class="text-xs whitespace-nowrap tabular-nums">${val}</div>`
+						render: () => `<div class="text-sm whitespace-nowrap tabular-nums">${val}</div>`
 					};
 				});
 				return renderSnippet(snippet, { v });
@@ -145,7 +145,7 @@ export const createGuestColumns = (onView: (visit: GuestVisit) => void) =>
 					const safe = v.replace(/</g, '&lt;').replace(/>/g, '&gt;');
 					return {
 						render: () =>
-							`<div class="text-xs whitespace-nowrap truncate max-w-[140px]" title="${safe}">${safe}</div>`
+							`<div class="text-sm whitespace-nowrap truncate max-w-[140px]" title="${safe}">${safe}</div>`
 					};
 				});
 				return renderSnippet(snippet, { v: row.original.kab_kota });
@@ -159,7 +159,7 @@ export const createGuestColumns = (onView: (visit: GuestVisit) => void) =>
 				const snippet = createRawSnippet<[{ v: string }]>((getV) => {
 					const { v: val } = getV();
 					return {
-						render: () => `<div class="text-xs whitespace-nowrap tabular-nums">${val}</div>`
+						render: () => `<div class="text-sm whitespace-nowrap tabular-nums">${val}</div>`
 					};
 				});
 				return renderSnippet(snippet, { v });

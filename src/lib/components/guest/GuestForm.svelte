@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { onMount } from 'svelte';
 	import { tick } from 'svelte';
 	import { slide } from 'svelte/transition';
 	import { toast } from 'svelte-sonner';
@@ -113,10 +112,6 @@
 		}
 	});
 
-	onMount(() => {
-		guestStore.init();
-	});
-
 	const handleHpInput = (e: Event): void => {
 		const target = e.target as HTMLInputElement;
 		const digits = target.value.replace(/\D/g, '').slice(0, 15);
@@ -130,7 +125,7 @@
 		successVisible = false;
 	};
 
-	const handleSubmit = (e: SubmitEvent): void => {
+	const handleSubmit = async (e: SubmitEvent): Promise<void> => {
 		e.preventDefault();
 		isSubmitting = true;
 		errors = {};
@@ -172,11 +167,17 @@
 			return;
 		}
 
-		guestStore.add(result.data);
-		toast.success('Terima kasih, kunjungan tercatat');
-		successVisible = true;
-		form = createInitialForm();
-		isSubmitting = false;
+		try {
+			await guestStore.add(result.data);
+			toast.success('Terima kasih, kunjungan tercatat');
+			successVisible = true;
+			form = createInitialForm();
+		} catch (err) {
+			const msg = err instanceof Error ? err.message : 'Gagal menyimpan kunjungan';
+			toast.error(msg);
+		} finally {
+			isSubmitting = false;
+		}
 	};
 
 	const goToDaftar = (): void => {
@@ -189,17 +190,17 @@
 		<Card.Title class="text-2xl font-[var(--font-cal-sans)] font-semibold tracking-tight"
 			>Buku Tamu PST - BPS Kota Pagar Alam</Card.Title
 		>
-		<Card.Description class="text-sm text-slate"
+		<Card.Description class="text-base text-slate"
 			>Silakan isi 16 field berikut sesuai pedoman. Field bertanda * wajib diisi.</Card.Description
 		>
 	</Card.Header>
 	<Card.Content>
 		{#if successVisible}
 			<div
-				class="mb-4 rounded-sm border border-green-200 bg-green-50 px-4 py-3 text-xs text-green-800"
+				class="mb-4 rounded-sm border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800"
 			>
 				Data kunjungan berhasil disimpan. Terima kasih telah mengisi buku tamu.
-				<button type="button" class="ml-2 text-xs underline" onclick={goToDaftar}
+				<button type="button" class="ml-2 text-sm underline" onclick={goToDaftar}
 					>Lihat daftar</button
 				>
 			</div>
@@ -426,7 +427,7 @@
 										aria-expanded={provinsiOpen}
 										aria-invalid={errors.provinsi ? true : undefined}
 										data-invalid={errors.provinsi ? true : undefined}
-										class="h-9 w-full justify-between rounded-sm px-3 text-xs font-normal"
+										class="h-9 w-full justify-between rounded-sm bg-primary-foreground px-3 text-sm font-normal"
 									>
 										{form.provinsi || 'Pilih provinsi'}
 										<ChevronsUpDown class="size-4 opacity-50" />
@@ -441,9 +442,9 @@
 								collisionPadding={8}
 							>
 								<Command.Root>
-									<Command.Input placeholder="Cari provinsi..." class="h-9 text-xs" />
+									<Command.Input placeholder="Cari provinsi..." class="h-9 text-sm" />
 									<Command.List class="max-h-60 overflow-y-auto">
-										<Command.Empty class="p-2 text-xs">Tidak ditemukan.</Command.Empty>
+										<Command.Empty class="p-2 text-sm">Tidak ditemukan.</Command.Empty>
 										<Command.Group>
 											{#each provinces as prov (prov)}
 												<Command.Item
@@ -452,7 +453,7 @@
 														form.provinsi = prov;
 														closeAndFocusProvinsi();
 													}}
-													class="text-xs"
+													class="text-sm"
 												>
 													{prov}
 													<Check
@@ -585,8 +586,8 @@
 		</form>
 	</Card.Content>
 	<Card.Footer class="justify-end gap-2">
-		<Button type="button" variant="outline" class="text-xs" onclick={handleReset}>Reset</Button>
-		<Button type="submit" form="guest-form" class="text-xs" disabled={isSubmitting}>
+		<Button type="button" variant="outline" class="text-sm" onclick={handleReset}>Reset</Button>
+		<Button type="submit" form="guest-form" class="text-sm" disabled={isSubmitting}>
 			{isSubmitting ? 'Menyimpan...' : 'Simpan Kunjungan'}
 		</Button>
 	</Card.Footer>

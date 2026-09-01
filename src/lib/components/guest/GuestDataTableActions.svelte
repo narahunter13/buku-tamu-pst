@@ -15,4 +15,4 @@
 	};
 </script>
 
-<Button variant="outline" size="sm" class="h-7 text-xs" onclick={handleClick}>Detail</Button>
+<Button variant="outline" size="sm" class="h-7 text-sm" onclick={handleClick}>Detail</Button>

@@ -136,7 +136,7 @@
 		@apply border-border outline-ring/50;
 	}
 	body {
-		@apply bg-paper font-inter text-xs leading-5 text-graphite antialiased;
+		@apply bg-paper font-inter text-sm leading-5 text-graphite antialiased;
 	}
 	h1,
 	h2,

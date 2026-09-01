@@ -31,8 +31,8 @@
 {#if visits.length === 0}
 	<Card.Root>
 		<Card.Content class="py-10 text-center">
-			<p class="text-sm text-muted-foreground">Belum ada data kunjungan.</p>
-			<p class="mt-1 text-xs text-muted-foreground">
+			<p class="text-base text-muted-foreground">Belum ada data kunjungan.</p>
+			<p class="mt-1 text-sm text-muted-foreground">
 				Data akan muncul setelah tamu mengisi buku tamu.
 			</p>
 		</Card.Content>
@@ -75,7 +75,7 @@
 						</Table.Cell>
 						<Table.Cell>{visit.tahun_lahir}</Table.Cell>
 						<Table.Cell class="max-w-28 truncate">{visit.kab_kota}</Table.Cell>
-						<Table.Cell class="text-xs whitespace-nowrap">{visit.visit_date}</Table.Cell>
+						<Table.Cell class="text-sm whitespace-nowrap">{visit.visit_date}</Table.Cell>
 						<Table.Cell class="text-right">
 							<Button variant="outline" size="sm" onclick={() => onView(visit)}>Detail</Button>
 						</Table.Cell>

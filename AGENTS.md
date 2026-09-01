@@ -166,41 +166,48 @@ Tidak ada pekerjaan yang dianggap selesai tanpa: typecheck lulus, build sukses, 
 
 ## Rencana
 
-### Judul: Buku Tamu PST - Frontend SPA SvelteKit 5 (Fase Frontend-Only)
+### Judul: Buku Tamu PST - Backend Tauri v2 Windows (Fase Backend) + Frontend DONE
 
-- **Status:** approved 2026-08-31 - 8 poin user locked + 5 klarifikasi tambahan
-- **Pemilik:** @planner (revisi 2)
-- **Sumber:** PEDOMAN_BUKU_TAMU.md 16 field + AGENTS.md Konteks Proyek + keputusan user
-- **Klarifikasi final:** dummy TS saja (tanpa JSON/.db), statistik WAJIB, persist localStorage `btpst_mock_visits`, validasi hp digit-only 8-15, tahun lahir select 1940-sekarang placeholder kosong required
-- **Mode:** SPA static `ssr=false` `fallback:index.html` port 1420 locked, Tailwind v4 + shadcn-svelte, ESLint+Prettier, TS strict true, pnpm only
+- **Status:** frontend DONE (Task 1-7 PASS, commit 5722968), backend APPROVED 2026-08-31 - 6 tradeoff B1-B6 locked
+- **Pemilik:** @planner backend revisi 1
+- **Sumber:** PEDOMAN_BUKU_TAMU.md 16 field + frontend SPA DONE + requirement Windows-only fullscreen/minimize/close confirm/loading/autostart
+- **Keputusan B1-B6 final:** B1 A2 maximized:true + fullscreen:false (koreksi 2026-09-01: title bar native tampil; sebelumnya fullscreen:true exclusive hilangkan title bar), B2 decorations:true native, B3 autostart enable default, B4 overlay Svelte di +layout.svelte, B5 NSIS only, B6 plugin-sql Database.load (no fetch, invoke via plugin)
+- **Mode:** Windows Desktop exclusive, Tauri v2 Rust + SQLite tauri-plugin-sql + plugin-dialog + plugin-autostart + plugin-single-instance, bundle NSIS small, performa WAL + indices
 
-#### 1. Kriteria Sukses Fase Frontend (Gate sebelum Tauri Backend)
+#### 1. Kriteria Sukses Frontend DONE (gate lalu)
 
-- AC1: `pnpm check` PASS (svelte-check + tsc strict)
-- AC2: `pnpm build` PASS hasil `build/index.html` + `build/_app/`
-- AC3: `pnpm lint` PASS (eslint + prettier)
-- AC4: `pnpm dev` jalan di 1420 strictPort (fail jika occupied)
-- AC5: Form 16 field render urut pedoman, 4 conditional jalan (provinsi, pekerjaanLainnya, tipeDisabilitas, keperluanLainnya)
-- AC6: Validasi zod error inline `data-invalid` + `aria-invalid`, hp digit 8-15, email format
-- AC7: Submit valid ke mock store + localStorage + toast + muncul di /daftar
-- AC8: /daftar tampil 25 dummy + entry baru, search/filter reaktif, detail dialog
-- AC9: /statistik tampil total/hari ini/by keperluan (wajib)
-- AC10: Approval user eksplisit sebelum lanjut Tauri
+- AC1-10 frontend PASS: pnpm check/build/lint PASS, form 16 field 4 conditional, hp digit 8-15, localStorage 25 dummy, daftar search/filter, statistik cards. Out-of-scope lalu kini ACTIVE.
 
-Out-of-scope fase ini: `src-tauri/`, Rust, `tauri-plugin-sql`, IPC `invoke` (ditunda Task 8-11).
+#### 2. Kriteria Sukses Backend (gate Windows)
 
-#### 2. Arsitektur SPA
+- AC-B1: `cargo check` dan `pnpm check` PASS, `pnpm build` -> `build/index.html`
+- AC-B2: `pnpm tauri dev` load 1420 fullscreen tanpa error
+- AC-B3: `buku-tamu.db` di AppData, `visits` 16 kolom + 4 CHECK + 3 indices, seed 25 jika kosong COUNT 25
+- AC-B4: Form submit insert DB parameterized, muncul di /daftar via SELECT bukan localStorage
+- AC-B5: /daftar search/filter LIMIT/OFFSET + pagination via SQL atau client, detail full field
+- AC-B6: /statistik query COUNT GROUP BY dari DB
+- AC-B7: Window hanya minimize/close, close -> confirm dialog prevent_close
+- AC-B8: Loading overlay di +layout.svelte saat guestStore.loading
+- AC-B9: Autostart enable/disable registry HKCU, isEnabled reflect
+- AC-B10: `pnpm tauri build` NSIS exe 5-10 MB downloadBootstrapper bisa install
+- AC-B11: grep fetch 0, ACL allowlist sql/dialog/autostart saja
 
-- SvelteKit 2 + Svelte 5 runes, `adapter-static` fallback `index.html`, `src/routes/+layout.ts` `ssr=false prerender=false`, `vite.config.ts` port 1420 strictPort + `@tailwindcss/vite`
-- Lib: `lib/schemas/guest.ts` (zod superRefine 4 rules), `lib/types.ts`, `lib/constants/provinces.ts` 38 provinsi, `lib/data/dummy.ts` 25 records, `lib/stores/guests.svelte.ts` factory `$state.raw` + localStorage persist
-- Routes: `/` Form, `/daftar` Table+Dialog, `/statistik` Cards
-- Alur mock: seed dummy jika localStorage kosong -> form submit zod parse -> map `Lainnya: {isian}` -> `store.add()` -> `localStorage.setItem` -> toast -> reset
+#### 3. Arsitektur Backend
 
-#### 3. Tech Stack
+- SvelteKit build -> ../build -> Tauri webview fullscreen true decorations true
+- Rust Builder: plugin-sql (sqlite, migrations add_migrations), plugin-dialog confirm, plugin-autostart, plugin-single-instance focus
+- DB: %APPDATA%/com.bps.bukutamu/buku-tamu.db, WAL, migrations 001_visits.sql include_str guest.sql + 3 indices
+- Store: lib/stores/guests.svelte.ts factory async init/add/list/stats via Database.load('sqlite:buku-tamu.db') + select/execute $1..$16 parameterized, fallback isTauri guard ke localStorage untuk pnpm dev browser
+- Loading: +layout.svelte {#if guestStore.loading} fixed overlay spinner {/if} onMount init()
+- Close: JS onCloseRequested preventDefault -> confirm -> destroy, single-instance cegah lock
 
-- SvelteKit 2, Svelte 5, adapter-static 3, Vite 6, TS strict true, ESLint+Prettier via `sv add`, Tailwind v4 via `sv add tailwindcss`, shadcn-svelte latest, zod 3.25, @lucide/svelte, svelte-sonner, pnpm only
+#### 4. Tech Stack Backend Windows
 
-#### 4. Skema DB Referensi (untuk zod + dummy, eksekusi native di Task 9)
+- Rust 1.95 tauri 2, tauri-plugin-sql 2 sqlite, tauri-plugin-dialog 2, tauri-plugin-autostart 2, tauri-plugin-single-instance 2, serde
+- JS: @tauri-apps/api@^2, @tauri-apps/plugin-sql@^2, @tauri-apps/plugin-dialog@^2, @tauri-apps/plugin-autostart@^2
+- Bundle windows nsis downloadBootstrapper silent, Cargo release strip lto codegen-units 1 panic abort opt-level s
+
+#### 5. Skema DB Native (reuse guest.sql)
 
 ```sql
 CREATE TABLE visits (
@@ -219,39 +226,33 @@ CREATE TABLE visits (
   CHECK((disabilitas='Tidak' AND tipe_disabilitas IS NULL) OR (disabilitas='Ya' AND tipe_disabilitas IS NOT NULL)),
   CHECK((negara!='Indonesia' AND provinsi IS NULL) OR (negara='Indonesia' AND provinsi IS NOT NULL))
 );
+CREATE INDEX idx_visits_date ON visits(visit_date);
+CREATE INDEX idx_visits_keperluan ON visits(keperluan);
+CREATE INDEX idx_visits_created ON visits(created_at DESC);
 ```
 
-Mapping 16 field pedoman ke kolom, `Lainnya: {isian}` dipisah agar query atomik, display gabung di UI.
+#### 6. Konfigurasi Final Windows (B1 A2, B2 true, B5 NSIS)
 
-#### 5. Data Dummy
+- tauri.conf.json: productName Buku Tamu PST identifier com.bps.bukutamu build devUrl 1420 frontendDist ../build, windows[0] width 1280 height 800 min 1024x600 fullscreen false maximized true resizable false maximizable false minimizable true closable true decorations true center true, bundle targets ["nsis"] webviewInstallMode downloadBootstrapper silent
+- capabilities/default.json: platforms ["windows"] windows ["main"] permissions sql:default/execute/select/load/close dialog:default/confirm/message autostart allow-enable/disable/is-enabled core window allow-close/minimize/set-fullscreen
+- Cargo.toml release strip lto codegen-units 1 panic abort
 
-- `src/lib/data/dummy.ts` 25 records typed `GuestVisit`, distribusi: semua 7 pekerjaan, 8 pendidikan, 7 keperluan, 5x disabilitas Ya, 3x luar negeri provinsi null, tahun 1945-2006
-- Store `src/lib/stores/guests.svelte.ts` factory, `$state.raw` array, `nextId` `$derived`, `add()`, `list()`, persist `localStorage btpst_mock_visits`
+#### 7. Validasi & Keamanan
 
-#### 6. Konfigurasi Final
+- Zod frontend + CHECK DB, parameterized $1, ACL allowlist, no fetch grep 0
 
-- `svelte.config.js` adapter-static fallback `index.html`, `vitePreprocess`, `runes:true`
-- `vite.config.ts` plugins `[tailwindcss(), sveltekit()]`, `server.port 1420 strictPort true host 127.0.0.1`, `preview same`
-- `src/routes/+layout.ts` `export const ssr=false; export const prerender=false`
-- `components.json` aliases `$lib/components/ui`, iconLibrary `@lucide/svelte`
+#### 8. Strategi Verifikasi Backend
 
-#### 7. Validasi
-
-- hp: `z.string().regex(/^[0-9]{8,15}$/, 'HP 8-15 digit')` (digit only)
-- email: `z.string().email()`
-- tahun_lahir: select 1940-now desc, placeholder kosong `required`
-- 4 conditional via `superRefine`
-
-#### 8. Strategi Verifikasi
-
-`pnpm check` 0 error, `pnpm lint` 0 error, `pnpm build` ada `build/index.html`, dev smoke di 1420 form conditional + /daftar filter + /statistik cards.
+- pnpm check 0, cargo check 0, pnpm build build/index.html, cargo build, tauri dev fullscreen minimize close confirm loading, tauri build NSIS exe <15MB, autostart registry
 
 #### 9. Risiko
 
-- Conditional 4 rule missed -> zod superRefine + $derived disable
-- 38 provinsi typo -> Permendagri 2023/2024 const
-- Tailwind v4 clash -> `@tailwindcss/vite`
-- Port bentrok -> strictPort fail fast
+- WebView2 offline -> downloadBootstrapper fallback embed
+- SQLite lock -> single-instance + busy_timeout 5000
+- Fullscreen multi-monitor -> maximized fallback
+- CloseRequested prevent_close race -> JS preventDefault
+- Autostart HKCU no admin
+- Dev tanpa Tauri -> isTauri guard fallback localStorage
 
 ## Daftar Task
 
@@ -318,38 +319,56 @@ Mapping 16 field pedoman ke kolom, `Lainnya: {isian}` dipisah agar query atomik,
 - Dependensi: Task 6
 - Status: [x] done - statistik cards total/hari ini/by keperluan, responsive, check/build/lint PASS
 
-### Task 8 [DITUNDA]: Init Tauri v2 + config 1420
+### Task 8: Init Tauri v2 + config Windows-only 1420
 
 - Tipe: backend
-- Tujuan: cargo tauri init, tauri.conf.json devUrl 1420 frontendDist ../build
-- File: `src-tauri/*`
-- Acceptance: `pnpm tauri dev` webview load 1420
-- Dependensi: Gate Task 7 APPROVED
-- Status: [ ] ditunda
+- Tujuan: cargo Tauri v2 init, tauri.conf.json devUrl 1420 frontendDist ../build, window fullscreen true decorations true B1 A/B2 true
+- File: `src-tauri/Cargo.toml`, `src-tauri/tauri.conf.json`, `src-tauri/src/lib.rs`, `src-tauri/src/main.rs`, `src-tauri/build.rs`, `src-tauri/capabilities/default.json`, `src-tauri/icons/*`
+- Acceptance: `cargo check --manifest-path src-tauri/Cargo.toml` PASS, `pnpm check` PASS, `pnpm tauri dev` load 1420 fullscreen, `pnpm build` -> build/index.html
+- Dependensi: Task 7 APPROVED + B1-B6 locked
+- Status: [x] done - tauri init, config windows-only, cargo check PASS
 
-### Task 9 [DITUNDA]: SQLite plugin + migrasi visits
+### Task 9: SQLite plugin-sql + migrasi visits + seed 25 dummy
 
 - Tipe: backend
-- Tujuan: tauri-plugin-sql, SQL CREATE TABLE visits, seed 25 dummy
-- File: `src-tauri/src/db.rs`, `migrations/001_visits.sql`
-- Acceptance: `buku-tamu.db` terbuat, SELECT return 25
+- Tujuan: tauri-plugin-sql sqlite, migration CREATE TABLE visits + 3 indices, seed 25 dummy jika kosong
+- File: `src-tauri/Cargo.toml`, `src-tauri/src/lib.rs` add_migrations, `src-tauri/migrations/001_visits.sql` copy guest.sql, `src/lib/schemas/guest.sql`
+- Acceptance: `cargo check` PASS, DB `buku-tamu.db` di AppData, COUNT 25 fresh, CHECK tolak invalid
 - Dependensi: Task 8
-- Status: [ ] ditunda
+- Status: [x] done - plugin-sql sqlite + 001_visits.sql 16 col + 3 indices, Manager import fix
 
-### Task 10 [DITUNDA]: IPC commands + ganti store ke invoke
+### Task 10: Refactor store ke plugin-sql + loading overlay + no fetch
 
 - Tipe: backend
-- Tujuan: add_visit list_visits search, store ganti invoke()
-- File: `src-tauri/src/commands/*`, `src/lib/stores/guests.svelte.ts`
-- Acceptance: form insert DB native, list fetch DB
+- Tujuan: guests.svelte.ts async init/add/list/stats via Database.load select/execute $1..$16 parameterized, overlay di +layout.svelte, no fetch
+- File: `src/lib/stores/guests.svelte.ts`, `src/routes/+layout.svelte` overlay, `src/routes/+page.svelte`, `src/routes/daftar/+page.svelte`, `src/routes/statistik/+page.svelte`, `package.json` @tauri-apps/*
+- Acceptance: `pnpm check` PASS, grep fetch 0, loading overlay saat init, CRUD via Database parameterized, pnpm dev browser fallback localStorage
 - Dependensi: Task 9
-- Status: [ ] ditunda
+- Status: [x] done - Database.load + $1..$16, overlay +layout, isTauri fallback, no fetch, check/build/lint PASS
 
-### Task 11 [DITUNDA]: Build bundle Windows + docs
+### Task 11: Window close confirm + minimize only + single-instance
 
 - Tipe: backend
-- Tujuan: pnpm tauri build installer
-- File: `docs/*`
-- Acceptance: .exe installer jalan
+- Tujuan: onCloseRequested prevent_close dialog confirm message, minimize true, maximize/resize false, single-instance focus
+- File: `src-tauri/src/lib.rs` single_instance, `src/lib/utils/window.ts` atau +layout.svelte onCloseRequested, `capabilities/default.json` dialog
+- Acceptance: close -> confirm Cancel stay Ok destroy, minimize works, double launch focus existing, cargo check PASS
 - Dependensi: Task 10
-- Status: [ ] ditunda
+- Status: [x] done - dialog plugin + onCloseRequested forceClose guard, single-instance focus main
+
+### Task 12: Autostart enable default + toggle
+
+- Tipe: backend
+- Tujuan: plugin-autostart enable default di setup, toggle isEnabled/enable/disable, registry HKCU Run
+- File: `src-tauri/src/lib.rs` autostart builder, `src/lib/components/settings/AutostartToggle.svelte` atau statistik, `capabilities/default.json` autostart permissions
+- Acceptance: autostart isEnabled true default, toggle set registry, cargo check PASS
+- Dependensi: Task 10 (paralel Task 11)
+- Status: [x] done - autostart plugin + store btpst_autostart_init first-run enable, Switch di statistik
+
+### Task 13: Bundle optimize NSIS + final QA
+
+- Tipe: backend
+- Tujuan: bundle NSIS only downloadBootstrapper small, Cargo release strip lto, icons, final QA pnpm/cargo check + tauri build, fix title bar fullscreen->maximized
+- File: `src-tauri/tauri.conf.json` bundle targets NSIS, `src-tauri/Cargo.toml` profile release, `README.md` docs
+- Acceptance: `pnpm tauri build` NSIS exe <15MB bisa install, pnpm check/cargo check PASS, build/index.html ada, title bar native tampil
+- Dependensi: Task 11, Task 12
+- Status: [x] done - maximized:true fullscreen:false title bar fix, .prettierignore src-tauri/gen, pnpm check/lint/build + cargo check PASS, release profile strip/lto

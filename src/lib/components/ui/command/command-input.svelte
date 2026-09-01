@@ -20,7 +20,7 @@
 			{value}
 			data-slot="command-input"
 			class={cn(
-				'w-full py-2 text-xs outline-hidden disabled:cursor-not-allowed disabled:opacity-50',
+				'w-full py-2 text-sm outline-hidden disabled:cursor-not-allowed disabled:opacity-50',
 				className
 			)}
 			{...restProps}
